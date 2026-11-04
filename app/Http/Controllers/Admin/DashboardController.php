@@ -15,6 +15,8 @@ class DashboardController extends Controller
             'customers' => User::where('role', 'customer')->count(),
             'bouquets' => Bouquet::count(),
             'orders' => Order::count(),
+            'lowStockCount' => Bouquet::where('stock', '<=', 0)->orWhere(fn ($q) => $q->lowStock())->count(),
+            'lowStock' => Bouquet::whereColumn('stock', '<=', 'low_stock_threshold')->orderBy('stock')->limit(5)->get(),
         ]);
     }
 }

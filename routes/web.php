@@ -31,6 +31,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('bouquet-images/{bouquet}/edit', [BouquetImageController::class, 'edit'])->name('bouquet-images.edit');
         Route::put('bouquet-images/{bouquet}', [BouquetImageController::class, 'update'])->name('bouquet-images.update');
         Route::delete('bouquet-images/{bouquet}', [BouquetImageController::class, 'destroy'])->name('bouquet-images.destroy');
+        Route::resource('bouquets', \App\Http\Controllers\Admin\BouquetController::class)->except('show');
+        Route::patch('bouquets/{bouquet}/stock', [\App\Http\Controllers\Admin\BouquetController::class, 'updateStock'])
+            ->name('bouquets.stock');
     });
 });
 Route::resource('categories', CategoryController::class)->except('show');
