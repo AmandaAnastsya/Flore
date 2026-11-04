@@ -10,6 +10,7 @@
             @guest
                 <a href="{{ route('login') }}" class="btn btn-primary me-2">Login</a>
                 <a href="{{ route('register') }}" class="btn btn-outline-primary">Register</a>
+                <a href="{{ route('catalog.index') }}" class="btn btn-outline-secondary me-2">Lihat Katalog</a>
             @else
                 <a href="{{ url('/home') }}" class="btn btn-primary">Ke Dashboard</a>
             @endguest
