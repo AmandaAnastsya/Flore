@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\BouquetImageController;
+use App\Http\Controllers\Admin\CategoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -16,12 +18,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
         Route::post('login', [AdminAuthController::class, 'login'])
-            ->middleware('throttle:5,1')   // maks 5 percobaan per menit
+            ->middleware('throttle:5,1')
             ->name('login.submit');
     });
 
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        // route admin lain (bouquet, order, dll.) nanti ditaruh di grup ini
+
+        Route::resource('categories', CategoryController::class)->except('show');
+
+        Route::get('bouquet-images', [BouquetImageController::class, 'index'])->name('bouquet-images.index');
+        Route::get('bouquet-images/{bouquet}/edit', [BouquetImageController::class, 'edit'])->name('bouquet-images.edit');
+        Route::put('bouquet-images/{bouquet}', [BouquetImageController::class, 'update'])->name('bouquet-images.update');
+        Route::delete('bouquet-images/{bouquet}', [BouquetImageController::class, 'destroy'])->name('bouquet-images.destroy');
     });
 });
+Route::resource('categories', CategoryController::class)->except('show');
+
+Route::get('bouquet-images', [BouquetImageController::class, 'index'])->name('bouquet-images.index');
+Route::get('bouquet-images/{bouquet}/edit', [BouquetImageController::class, 'edit'])->name('bouquet-images.edit');
+Route::put('bouquet-images/{bouquet}', [BouquetImageController::class, 'update'])->name('bouquet-images.update');
+Route::delete('bouquet-images/{bouquet}', [BouquetImageController::class, 'destroy'])->name('bouquet-images.destroy');

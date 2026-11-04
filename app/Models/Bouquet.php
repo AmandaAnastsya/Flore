@@ -36,4 +36,10 @@ class Bouquet extends Model
 {
     return $this->hasMany(OrderItem::class);
 }
+protected function imageUrl(): Attribute
+{
+    return Attribute::get(fn () => $this->image
+        ? asset('storage/' . $this->image)
+        : asset('images/placeholder-bouquet.svg'));
+}
 }
