@@ -1,22 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<style>
-    .catalog { --rose: #8e5a66; --rose-dark: #6f4350; --blush: #f5e9ec; }
-    .catalog .hero { background: var(--blush); border: 1px solid #e8c6cf; border-radius: .5rem; padding: 1.75rem; }
-    .catalog .hero h1, .catalog .section-title { font-family: Georgia, 'Times New Roman', serif; color: var(--rose); letter-spacing: .04em; text-transform: uppercase; }
-    .catalog .hero h1 { font-size: 1.6rem; }
-    .catalog .btn-rose { background: var(--rose); color: #fff; border: 0; }
-    .catalog .btn-rose:hover { background: var(--rose-dark); color: #fff; }
-    .catalog .product { background: #fff; border: 1px solid #f0dde2; border-radius: .5rem; overflow: hidden; height: 100%; display: flex; flex-direction: column; }
-    .catalog .product img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--blush); }
-    .catalog .tags { position: absolute; top: .6rem; left: .6rem; display: flex; gap: .3rem; flex-wrap: wrap; }
-    .catalog .tag { font-size: .68rem; letter-spacing: .05em; text-transform: uppercase; color: #fff; padding: .2rem .5rem; border-radius: .2rem; }
-    .catalog .tag-sameday { background: var(--rose); }
-    .catalog .tag-luxury { background: #a27a84; }
-    .catalog .tag-out { background: #6c757d; }
-    .catalog .price { color: var(--rose); font-size: 1.15rem; }
-</style>
+@include('catalog._styles')
 
 <div class="container py-4 catalog">
 
@@ -60,7 +45,47 @@
             </div>
         </div>
 
-        @if(request()->hasAny(['q', 'category', 'occasion', 'style', 'color', 'price', 'sort']))
+        <details class="mt-3" @if($advancedActive) open @endif>
+            <summary class="fw-semibold">
+                Filter lanjutan
+                @if($advancedActive) <span class="badge bg-secondary">{{ $advancedActive }}</span> @endif
+            </summary>
+
+            <div class="row g-4 mt-1">
+                @foreach($groups as $name => [$title, $choices])
+                    <div class="col-6 col-md-3">
+                        <div class="fw-semibold small mb-1">{{ $title }}</div>
+                        @foreach($choices as $value => $text)
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="{{ $name }}[]" value="{{ $value }}"
+                                       id="{{ $name }}-{{ $value }}" @checked(in_array($value, $filters[$name], true))>
+                                <label class="form-check-label small" for="{{ $name }}-{{ $value }}">{{ $text }}</label>
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+
+                <div class="col-12 col-md-3">
+                    <div class="fw-semibold small mb-1">Rentang harga (Rp)</div>
+                    <div class="input-group input-group-sm mb-3">
+                        <input type="number" min="0" name="price_min" value="{{ $filters['price_min'] }}" class="form-control" placeholder="Min">
+                        <input type="number" min="0" name="price_max" value="{{ $filters['price_max'] }}" class="form-control" placeholder="Maks">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="same_day" value="1" id="same_day" @checked($filters['same_day'])>
+                        <label class="form-check-label small" for="same_day">Same day delivery</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="in_stock" value="1" id="in_stock" @checked($filters['in_stock'])>
+                        <label class="form-check-label small" for="in_stock">Hanya yang tersedia</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3"><button class="btn btn-rose btn-sm">Terapkan filter</button></div>
+        </details>
+
+        @if(request()->hasAny(['q', 'category', 'style', 'occasion', 'color', 'size', 'price', 'price_min', 'price_max', 'same_day', 'in_stock', 'sort']))
             <div class="mt-2"><a href="{{ route('catalog.index') }}" class="small">Reset semua filter</a></div>
         @endif
     </form>
@@ -79,36 +104,7 @@
     <div class="row g-4">
         @forelse($bouquets as $bouquet)
             <div class="col-12 col-sm-6 col-lg-4">
-                <div class="product">
-                    <div class="position-relative">
-                        <img src="{{ $bouquet->image_url }}" alt="{{ $bouquet->name }}" loading="lazy">
-                        <div class="tags">
-                            @if($bouquet->stock_status === 'out') <span class="tag tag-out">Habis</span> @endif
-                            @if($bouquet->is_same_day) <span class="tag tag-sameday">Same Day</span> @endif
-                            @if($bouquet->style === 'luxury') <span class="tag tag-luxury">Luxury</span> @endif
-                        </div>
-                    </div>
-                    <div class="p-3 d-flex flex-column flex-grow-1">
-                        <div class="fw-semibold">{{ $bouquet->name }}</div>
-                        <div class="text-muted small mb-2">{{ $bouquet->description }}</div>
-                        <div class="price mb-1">Rp {{ number_format($bouquet->price, 0, ',', '.') }}</div>
-                        <div class="small mb-3">
-                            @if($bouquet->stock_status === 'low')
-                                <span class="text-warning-emphasis">Sisa {{ $bouquet->stock }}</span>
-                            @elseif($bouquet->stock_status === 'ok' && $bouquet->is_same_day)
-                                <span class="text-success">Same day delivery tersedia</span>
-                            @endif
-                        </div>
-                        <div class="mt-auto">
-                            @if($bouquet->stock_status === 'out')
-                                <button class="btn btn-outline-secondary w-100" disabled>Stok habis</button>
-                            @else
-                                {{-- tombol aktif dibuat di item Keranjang Belanja --}}
-                                <button class="btn btn-rose w-100" disabled title="Keranjang segera hadir">Add to cart</button>
-                            @endif
-                        </div>
-                    </div>
-                </div>
+                @include('catalog._card')
             </div>
         @empty
             <div class="col-12 text-center text-muted py-5">

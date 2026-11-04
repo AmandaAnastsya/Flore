@@ -38,6 +38,11 @@ class Bouquet extends Model
 {
     return $this->hasMany(OrderItem::class);
 }
+    public function scopeVisible(Builder $query): Builder
+    {
+        return $query->where('is_active', true)
+            ->whereHas('category', fn ($q) => $q->where('is_active', true));
+    }
 protected function imageUrl(): Attribute
 {
     return Attribute::get(fn () => $this->image
