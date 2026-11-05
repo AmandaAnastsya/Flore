@@ -61,8 +61,13 @@
                 @if($bouquet->stock_status === 'out')
                     <button class="btn btn-outline-secondary" disabled>Stok habis</button>
                 @else
-                    {{-- diaktifkan di item Keranjang Belanja --}}
-                    <button class="btn btn-rose px-4" disabled title="Keranjang segera hadir">Add to cart</button>
+                    <form method="POST" action="{{ route('cart.store', $bouquet) }}" class="d-flex gap-2">
+    @csrf
+    <input type="number" name="quantity" value="1" min="1"
+           max="{{ min($bouquet->stock, \App\Services\Cart::MAX_QTY) }}"
+           class="form-control" style="width: 90px" aria-label="Jumlah">
+    <button class="btn btn-rose px-4">Add to cart</button>
+</form>
                 @endif
                 <a href="{{ $back }}" class="btn btn-outline-secondary">Kembali ke katalog</a>
             </div>

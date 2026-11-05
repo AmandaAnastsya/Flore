@@ -30,6 +30,11 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+    <a class="nav-link" href="{{ route('cart.index') }}">
+        Keranjang @if($cartCount) <span class="badge bg-secondary">{{ $cartCount }}</span> @endif
+    </a>
+</li>
                     <li class="nav-item">
                     <a class="nav-link" href="{{ route('catalog.index') }}">Katalog</a>
                 </li>

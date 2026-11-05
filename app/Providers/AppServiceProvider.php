@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Services\Cart;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,5 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+
+        View::composer('layouts.app', fn ($view) => $view->with('cartCount', app(Cart::class)->count()));
     }
 }

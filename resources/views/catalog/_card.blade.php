@@ -25,8 +25,10 @@
             @if($bouquet->stock_status === 'out')
                 <button class="btn btn-outline-secondary" disabled>Stok habis</button>
             @else
-                {{-- tombol aktif dibuat di item Keranjang Belanja --}}
-                <button class="btn btn-rose" disabled title="Keranjang segera hadir">Add to cart</button>
+                <form method="POST" action="{{ route('cart.store', $bouquet) }}" class="d-grid">
+    @csrf
+    <button class="btn btn-rose">Add to cart</button>
+</form>
             @endif
         </div>
     </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\BouquetImageController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\CartController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -16,7 +17,14 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{bouquet:slug}', [CatalogController::class, 'show'])->name('catalog.show');
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/catalog/{bouquet:slug}', [CatalogController::class, 'show'])->name('catalog.show');
 
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/items/{bouquet:slug}', [CartController::class, 'store'])
+    ->middleware('throttle:60,1')
+    ->name('cart.store');
+    
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
