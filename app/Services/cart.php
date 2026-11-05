@@ -57,6 +57,42 @@ class Cart
         return null;
     }
 
+    /** Ubah jumlah (nilai akhir, bukan tambahan). Mengembalikan pesan error, atau null kalau berhasil. */
+public function set(Bouquet $bouquet, int $qty): ?string
+{
+    $cart = $this->raw();
+
+    if (! isset($cart[$bouquet->id])) {
+        return "{$bouquet->name} tidak ada di keranjang.";
+    }
+    if ($bouquet->stock <= 0) {
+        return "{$bouquet->name} sedang habis.";
+    }
+    if ($qty > $bouquet->stock) {
+        return "Stok {$bouquet->name} hanya tersisa {$bouquet->stock}.";
+    }
+    if ($qty > self::MAX_QTY) {
+        return 'Maksimal ' . self::MAX_QTY . ' per bouquet.';
+    }
+
+    $cart[$bouquet->id] = $qty;
+    session()->put('cart', $cart);
+
+    return null;
+}
+
+    public function remove(int $bouquetId): void
+    {
+        $cart = $this->raw();
+        unset($cart[$bouquetId]);
+        session()->put('cart', $cart);
+    }
+
+    public function clear(): void
+    {
+        session()->forget('cart');
+    }
+
     /**
      * Cocokkan isi keranjang dengan kondisi terbaru:
      * hapus bouquet yang hilang/nonaktif/habis, dan sesuaikan jumlah dengan stok.

@@ -24,6 +24,14 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/items/{bouquet:slug}', [CartController::class, 'store'])
     ->middleware('throttle:60,1')
     ->name('cart.store');
+
+Route::patch('/cart/items/{bouquet:slug}', [CartController::class, 'update'])
+    ->middleware('throttle:60,1')
+    ->name('cart.update');
+Route::delete('/cart/items/{bouquet:slug}', [CartController::class, 'destroy'])
+    ->withTrashed()   // bouquet yang sudah dihapus admin tetap bisa dibuang dari keranjang
+    ->name('cart.destroy');
+Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
     
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
