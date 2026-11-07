@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container py-4" style="max-width: 640px">
+    @include('admin._nav')
     <h1 class="h3 mb-3">Gambar: {{ $bouquet->name }}</h1>
 
     <img id="preview" src="{{ $bouquet->image_url }}" class="img-fluid rounded mb-3" alt="Preview">

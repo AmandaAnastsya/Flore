@@ -8,18 +8,21 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function index(Cart $cart)
-    {
-        $notices = $cart->sync();
-        $lines = $cart->lines();
+        public function index(Cart $cart)
+{
+    $notices = $cart->sync();
+    $lines = $cart->lines();
+    $stemLines = $cart->stemLines();
 
-        return view('cart.index', [
-            'lines' => $lines,
-            'subtotal' => $lines->sum('subtotal'),
-            'itemCount' => $lines->sum('quantity'),
-            'notices' => $notices,
-        ]);
-    }
+    return view('cart.index', [
+        'lines' => $lines,
+        'stemLines' => $stemLines,
+        'subtotal' => $lines->sum('subtotal') + $stemLines->sum('subtotal'),
+        'itemCount' => $lines->sum('quantity'),
+        'stemCount' => $stemLines->sum('quantity'),
+        'notices' => $notices,
+    ]);
+}
 
     public function store(Request $request, Bouquet $bouquet, Cart $cart)
     {

@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,   // harus sebelum BouquetSeeder
             BouquetSeeder::class,
             RecommendationRuleSeeder::class,
+            FlowerSeeder::class,
         ]);
     }
 }

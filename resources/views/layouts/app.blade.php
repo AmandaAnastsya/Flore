@@ -38,6 +38,16 @@
                     <li class="nav-item">
                     <a class="nav-link" href="{{ route('catalog.index') }}">Katalog</a>
                 </li>
+                <li class="nav-item">
+    <a class="nav-link" href="{{ route('stems.index') }}">Per Tangkai</a>
+</li>
+                @auth
+    @if(auth()->user()->isAdmin())
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard Admin</a>
+        </li>
+    @endif
+@endauth
                     </ul>
 
                     <!-- Right Side Of Navbar -->

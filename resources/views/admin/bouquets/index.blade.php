@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container py-4">
+    @include('admin._nav')
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h3 mb-0">Inventaris Bouquet</h1>
         <a href="{{ route('admin.bouquets.create') }}" class="btn btn-primary">+ Tambah Bouquet</a>

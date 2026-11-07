@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\BouquetImageController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CartStemController; 
+use App\Http\Controllers\StemController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,7 +34,14 @@ Route::delete('/cart/items/{bouquet:slug}', [CartController::class, 'destroy'])
     ->withTrashed()   // bouquet yang sudah dihapus admin tetap bisa dibuang dari keranjang
     ->name('cart.destroy');
 Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
-    
+Route::get('/stems', [StemController::class, 'index'])->name('stems.index');
+
+Route::post('/cart/stems/{flower:slug}', [CartStemController::class, 'store'])
+    ->middleware('throttle:60,1')->name('cart.stems.store');
+Route::patch('/cart/stems/{flower:slug}', [CartStemController::class, 'update'])
+    ->middleware('throttle:60,1')->name('cart.stems.update');
+Route::delete('/cart/stems/{flower:slug}', [CartStemController::class, 'destroy'])
+    ->withTrashed()->name('cart.stems.destroy');
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');

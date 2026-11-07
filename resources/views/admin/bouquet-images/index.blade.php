@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container py-4">
+    @include('admin._nav')
     <h1 class="h3 mb-3">Gambar Bouquet</h1>
 
     @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
