@@ -35,6 +35,11 @@
         Keranjang @if($cartCount) <span class="badge bg-secondary">{{ $cartCount }}</span> @endif
     </a>
 </li>
+@auth
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('orders.index') }}">Pesanan Saya</a>
+    </li>
+@endauth
                     <li class="nav-item">
                     <a class="nav-link" href="{{ route('catalog.index') }}">Katalog</a>
                 </li>

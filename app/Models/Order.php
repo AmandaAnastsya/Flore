@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
 
 class Order extends Model
 {
@@ -27,6 +28,69 @@ class Order extends Model
         'paid_at' => 'datetime',
         'cancelled_at' => 'datetime',
     ];
+
+    public const STATUS_LABELS = [
+    'created' => 'Dibuat',
+    'pending_payment' => 'Menunggu pembayaran',
+    'payment_confirmed' => 'Pembayaran dikonfirmasi',
+    'preparing' => 'Sedang disiapkan',
+    'out_for_delivery' => 'Dalam pengiriman',
+    'delivered' => 'Terkirim',
+    'cancelled' => 'Dibatalkan',
+];
+
+public const STATUS_BADGES = [
+    'created' => 'secondary', 'pending_payment' => 'warning', 'payment_confirmed' => 'info',
+    'preparing' => 'primary', 'out_for_delivery' => 'primary', 'delivered' => 'success', 'cancelled' => 'danger',
+];
+
+public const PAYMENT_LABELS = [
+    'unpaid' => 'Belum dibayar',
+    'proof_uploaded' => 'Menunggu verifikasi',
+    'confirmed' => 'Lunas',
+    'rejected' => 'Bukti ditolak',
+];
+
+/** Urutan tahap untuk timeline tracking. */
+public const TIMELINE = ['pending_payment', 'payment_confirmed', 'preparing', 'out_for_delivery', 'delivered'];
+
+/** Status berikutnya yang dikerjakan admin. */
+public const FLOW = [
+    'payment_confirmed' => 'preparing',
+    'preparing' => 'out_for_delivery',
+    'out_for_delivery' => 'delivered',
+];
+
+public function canUploadProof(): bool
+{
+    return $this->status === 'pending_payment'
+        && in_array($this->payment_status, ['unpaid', 'rejected'], true);
+}
+
+public function canBeCancelledByCustomer(): bool
+{
+    return $this->canUploadProof();
+}
+
+public function canBeCancelledByAdmin(): bool
+{
+    return in_array($this->status, ['pending_payment', 'payment_confirmed', 'preparing'], true);
+}
+
+public function isAwaitingVerification(): bool
+{
+    return $this->status === 'pending_payment' && $this->payment_status === 'proof_uploaded';
+}
+
+public function nextStatus(): ?string
+{
+    return self::FLOW[$this->status] ?? null;
+}
+
+public function scopeAwaitingVerification(Builder $query): Builder
+{
+    return $query->where('status', 'pending_payment')->where('payment_status', 'proof_uploaded');
+}
 
     protected static function booted(): void
     {

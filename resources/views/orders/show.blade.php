@@ -3,12 +3,10 @@
 @section('content')
 @include('catalog._styles')
 @php
+    use App\Models\Order;
     $date = $order->delivery_date->locale('id')->translatedFormat('l, d F Y');
-    $statusLabels = [
-        'created' => 'Dibuat', 'pending_payment' => 'Menunggu pembayaran', 'payment_confirmed' => 'Pembayaran dikonfirmasi',
-        'preparing' => 'Sedang disiapkan', 'out_for_delivery' => 'Dalam pengiriman', 'delivered' => 'Terkirim', 'cancelled' => 'Dibatalkan',
-    ];
-    $paymentLabels = ['unpaid' => 'Belum dibayar', 'proof_uploaded' => 'Bukti diunggah', 'confirmed' => 'Lunas', 'rejected' => 'Ditolak'];
+    $currentIdx = array_search($order->status, Order::TIMELINE, true);
+    $ext = $order->payment_proof ? strtolower(pathinfo($order->payment_proof, PATHINFO_EXTENSION)) : null;
 @endphp
 
 <div class="container py-4 catalog">
@@ -17,10 +15,32 @@
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
         <h1 class="h4 section-title mb-0">Pesanan {{ $order->order_number }}</h1>
         <div>
-            <span class="badge bg-warning text-dark">{{ $statusLabels[$order->status] ?? $order->status }}</span>
-            <span class="badge bg-secondary">{{ $paymentLabels[$order->payment_status] ?? $order->payment_status }}</span>
+            <span class="badge bg-{{ Order::STATUS_BADGES[$order->status] ?? 'secondary' }}">{{ Order::STATUS_LABELS[$order->status] ?? $order->status }}</span>
+            <span class="badge bg-secondary">{{ Order::PAYMENT_LABELS[$order->payment_status] ?? $order->payment_status }}</span>
         </div>
     </div>
+
+    {{-- Tracking --}}
+    <div class="card border-0 shadow-sm mb-4"><div class="card-body">
+        @if($order->status === 'cancelled')
+            <div class="alert alert-secondary mb-0">
+                Pesanan dibatalkan{{ $order->cancelled_at ? ' pada ' . $order->cancelled_at->format('d M Y H:i') : '' }}.
+            </div>
+        @else
+            <ol class="list-unstyled d-flex flex-wrap gap-3 mb-0">
+                @foreach(Order::TIMELINE as $i => $step)
+                    @php
+                        $done = $currentIdx !== false && $i < $currentIdx;
+                        $now = $currentIdx !== false && $i === $currentIdx;
+                    @endphp
+                    <li class="d-flex align-items-center gap-2">
+                        <span class="badge rounded-pill {{ $done ? 'bg-success' : ($now ? 'bg-primary' : 'bg-light text-muted border') }}">{{ $done ? '✓' : $i + 1 }}</span>
+                        <span class="{{ $now ? 'fw-semibold' : ($done ? '' : 'text-muted') }}">{{ Order::STATUS_LABELS[$step] }}</span>
+                    </li>
+                @endforeach
+            </ol>
+        @endif
+    </div></div>
 
     <div class="row g-4">
         <div class="col-lg-8">
@@ -56,7 +76,7 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm"><div class="card-body">
+            <div class="card border-0 shadow-sm mb-4"><div class="card-body">
                 <h2 class="h6 section-title mb-3">Total</h2>
                 <div class="d-flex justify-content-between small mb-1"><span>Subtotal</span><span>Rp {{ number_format($order->subtotal, 0, ',', '.') }}</span></div>
                 <div class="d-flex justify-content-between small mb-1"><span>Ongkir</span><span>Rp {{ number_format($order->delivery_fee, 0, ',', '.') }}</span></div>
@@ -64,10 +84,56 @@
                     <div class="d-flex justify-content-between small mb-1"><span>Diskon</span><span>− Rp {{ number_format($order->discount, 0, ',', '.') }}</span></div>
                 @endif
                 <hr>
-                <div class="d-flex justify-content-between mb-3"><strong>Total</strong><strong class="price">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong></div>
-                <div class="small text-muted mb-3">Instruksi dan unggah bukti pembayaran akan tersedia di langkah berikutnya.</div>
-                <a href="{{ route('catalog.index') }}" class="btn btn-outline-secondary w-100">Lanjut belanja</a>
+                <div class="d-flex justify-content-between"><strong>Total</strong><strong class="price">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong></div>
             </div></div>
+
+            {{-- Pembayaran --}}
+            <div class="card border-0 shadow-sm mb-4"><div class="card-body">
+                <h2 class="h6 section-title mb-3">Pembayaran</h2>
+
+                @if($order->canUploadProof())
+                    @if($order->payment_status === 'rejected')
+                        <div class="alert alert-danger small">Bukti sebelumnya ditolak. Silakan unggah bukti yang benar.</div>
+                    @endif
+                    <div class="small mb-3">
+                        Transfer <strong>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong> ke:<br>
+                        <strong>{{ $bank['bank'] }} {{ $bank['account_number'] }}</strong><br>
+                        a.n. {{ $bank['account_name'] }}
+                    </div>
+                    <form method="POST" action="{{ route('orders.payment', $order->order_number) }}" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf"
+                               class="form-control mb-1 @error('payment_proof') is-invalid @enderror" aria-label="Bukti pembayaran">
+                        @error('payment_proof') <div class="invalid-feedback d-block mb-1">{{ $message }}</div> @enderror
+                        <div class="form-text mb-2">JPG, PNG, WEBP, atau PDF. Maksimal 3 MB.</div>
+                        <button class="btn btn-rose w-100">Kirim bukti pembayaran</button>
+                    </form>
+
+                @elseif($order->payment_status === 'proof_uploaded' && $order->status === 'pending_payment')
+                    <div class="alert alert-info small mb-2">Bukti diterima. Menunggu verifikasi admin.</div>
+                    <a href="{{ route('orders.proof', $order->order_number) }}" target="_blank" class="small">Lihat bukti yang dikirim</a>
+
+                @elseif($order->payment_status === 'confirmed')
+                    <div class="alert alert-success small mb-2">
+                        Pembayaran dikonfirmasi{{ $order->paid_at ? ' pada ' . $order->paid_at->format('d M Y H:i') : '' }}.
+                    </div>
+                    @if($order->payment_proof)
+                        <a href="{{ route('orders.proof', $order->order_number) }}" target="_blank" class="small">Lihat bukti</a>
+                    @endif
+                @else
+                    <div class="small text-muted">Tidak ada tindakan pembayaran.</div>
+                @endif
+            </div></div>
+
+            @if($order->canBeCancelledByCustomer())
+                <form method="POST" action="{{ route('orders.cancel', $order->order_number) }}"
+                      onsubmit="return confirm('Batalkan pesanan ini?')">
+                    @csrf
+                    <button class="btn btn-outline-danger w-100">Batalkan pesanan</button>
+                </form>
+            @endif
+
+            <a href="{{ route('orders.index') }}" class="btn btn-link w-100 mt-2">← Semua pesanan</a>
         </div>
     </div>
 </div>

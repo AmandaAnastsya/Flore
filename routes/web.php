@@ -11,6 +11,7 @@ use App\Http\Controllers\CartStemController;
 use App\Http\Controllers\StemController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -63,6 +64,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('bouquets', \App\Http\Controllers\Admin\BouquetController::class)->except('show');
         Route::patch('bouquets/{bouquet}/stock', [\App\Http\Controllers\Admin\BouquetController::class, 'updateStock'])
             ->name('bouquets.stock');
+            Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
+Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+Route::post('orders/{order}/confirm', [AdminOrderController::class, 'confirm'])->name('orders.confirm');
+Route::post('orders/{order}/reject', [AdminOrderController::class, 'reject'])->name('orders.reject');
+Route::post('orders/{order}/advance', [AdminOrderController::class, 'advance'])->name('orders.advance');
+Route::post('orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->name('orders.cancel');
     });
 });
 Route::resource('categories', CategoryController::class)->except('show');
@@ -79,5 +86,11 @@ Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function
     Route::post('/place', [CheckoutController::class, 'place'])->middleware('throttle:10,1')->name('place');
 });
 
-Route::get('/orders/{order:order_number}', [OrderController::class, 'show'])
-    ->middleware('auth')->name('orders.show');
+Route::middleware('auth')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order:order_number}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order:order_number}/payment', [OrderController::class, 'uploadProof'])
+        ->middleware('throttle:10,1')->name('orders.payment');
+    Route::post('/orders/{order:order_number}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::get('/orders/{order:order_number}/proof', [OrderController::class, 'proof'])->name('orders.proof');
+});
