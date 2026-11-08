@@ -38,6 +38,18 @@ class Cart
         return array_sum($this->raw()) + array_sum($this->rawStems());
     }
 
+        /** @return array<int,int> [bouquet_id => jumlah] */
+    public function bouquetQuantities(): array
+    {
+        return $this->raw();
+    }
+
+    /** @return array<int,int> [flower_id => jumlah tangkai] */
+    public function stemQuantities(): array
+    {
+        return $this->rawStems();
+    }
+
     // ---------------------------------------------------------------- bouquet
 
     /** Tambah bouquet. Mengembalikan pesan error, atau null kalau berhasil. */

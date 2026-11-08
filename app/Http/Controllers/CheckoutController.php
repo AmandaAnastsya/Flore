@@ -6,6 +6,9 @@ use App\Http\Requests\CheckoutRequest;
 use App\Models\Bouquet;
 use App\Services\Cart;
 use App\Services\DeliverySchedule;
+use App\Exceptions\OrderException;
+use App\Services\OrderService;
+use Illuminate\Support\Facades\Cache;
 
 class CheckoutController extends Controller
 {
@@ -84,7 +87,40 @@ class CheckoutController extends Controller
             'slots' => DeliverySchedule::labels(),
         ]);
     }
+    public function place(Cart $cart, OrderService $orders)
+{
+    if ($redirect = $this->guard($cart)) {
+        return $redirect;
+    }
 
+    $data = session('checkout');
+
+    if (! $data) {
+        return redirect()->route('checkout.index')->with('error', 'Lengkapi data checkout terlebih dahulu.');
+    }
+
+    $user = auth()->user();
+    $lock = Cache::lock('place-order:' . $user->id, 15);   // cegah klik ganda bersamaan
+
+    try {
+        $order = $lock->get(fn () => $orders->place(
+            $user, $data, $cart->bouquetQuantities(), $cart->stemQuantities()
+        ));
+    } catch (OrderException $e) {
+        return redirect()
+            ->route($e->target === 'checkout' ? 'checkout.index' : 'cart.index')
+            ->with('error', $e->getMessage());
+    }
+
+    if ($order === false) {
+        return redirect()->route('checkout.review')->with('error', 'Pesananmu sedang diproses, mohon tunggu sebentar.');
+    }
+
+    $cart->clear();
+    session()->forget('checkout');
+
+    return redirect()->route('orders.show', $order->order_number)->with('success', 'Pesanan berhasil dibuat.');
+}
     /** Keranjang kosong, atau berubah karena stok → kembali ke keranjang dengan pesan. */
     private function guard(Cart $cart)
     {

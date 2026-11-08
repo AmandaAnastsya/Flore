@@ -57,8 +57,11 @@
                 <div class="d-flex justify-content-between mb-3">
                     <span>Subtotal</span><strong class="price">Rp {{ number_format($subtotal, 0, ',', '.') }}</strong>
                 </div>
-                <button class="btn btn-rose w-100 mb-2" disabled>Buat pesanan (segera hadir)</button>
-                <div class="small text-muted">Pesanan belum tersimpan. Penyimpanan order dan pembayaran dikerjakan di langkah berikutnya.</div>
+                <form method="POST" action="{{ route('checkout.place') }}" onsubmit="this.querySelector('button').disabled = true;">
+    @csrf
+    <button class="btn btn-rose w-100 mb-2">Buat pesanan</button>
+</form>
+<div class="small text-muted">Stok langsung dikurangi saat pesanan dibuat. Instruksi pembayaran menyusul di langkah berikutnya.</div>
             </div></div>
         </div>
     </div>

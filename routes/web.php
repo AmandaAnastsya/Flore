@@ -10,7 +10,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartStemController; 
 use App\Http\Controllers\StemController;
 use App\Http\Controllers\CheckoutController;
-
+use App\Http\Controllers\OrderController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -76,4 +76,8 @@ Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function
     Route::get('/', [CheckoutController::class, 'index'])->name('index');
     Route::post('/', [CheckoutController::class, 'store'])->middleware('throttle:30,1')->name('store');
     Route::get('/review', [CheckoutController::class, 'review'])->name('review');
+    Route::post('/place', [CheckoutController::class, 'place'])->middleware('throttle:10,1')->name('place');
 });
+
+Route::get('/orders/{order:order_number}', [OrderController::class, 'show'])
+    ->middleware('auth')->name('orders.show');
