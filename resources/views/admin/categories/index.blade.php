@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
-<div class="container py-4">
+<div class="container-fluid px-0">
     @include('admin._nav')
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h3 mb-0">Kategori</h1>

@@ -12,30 +12,39 @@
 <div class="container py-4 catalog">
     @include('catalog._flash')
 
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-        <h1 class="h4 section-title mb-0">Pesanan {{ $order->order_number }}</h1>
+    <nav class="small mb-3"><a href="{{ route('orders.index') }}" class="text-decoration-none">← Pesanan Saya</a></nav>
+
+    {{-- Banner status (mockup hal. 45) --}}
+    <div class="status-banner mb-4 d-md-flex justify-content-between align-items-center gap-3">
         <div>
-            <span class="badge bg-{{ Order::STATUS_BADGES[$order->status] ?? 'secondary' }}">{{ Order::STATUS_LABELS[$order->status] ?? $order->status }}</span>
-            <span class="badge bg-secondary">{{ Order::PAYMENT_LABELS[$order->payment_status] ?? $order->payment_status }}</span>
+            <div class="eyebrow mb-1">Pesanan {{ $order->order_number }}</div>
+            <h1 class="h5 mb-1 text-white text-uppercase" style="letter-spacing:.04em">
+                Status: {{ Order::STATUS_LABELS[$order->status] ?? $order->status }}
+            </h1>
+            <div class="small" style="color:rgba(255,255,255,.8)">
+                Pengiriman {{ $date }}{{ isset($slots[$order->delivery_slot]) ? ' · ' . $slots[$order->delivery_slot] : '' }}
+                · Penerima: {{ $order->recipient_name }}
+            </div>
         </div>
+        <span class="badge bg-light text-dark mt-2 mt-md-0">{{ Order::PAYMENT_LABELS[$order->payment_status] ?? $order->payment_status }}</span>
     </div>
 
     {{-- Tracking --}}
     <div class="card border-0 shadow-sm mb-4"><div class="card-body">
+        <h2 class="h6 section-title mb-4">Fulfillment Progress Timeline</h2>
         @if($order->status === 'cancelled')
             <div class="alert alert-secondary mb-0">
                 Pesanan dibatalkan{{ $order->cancelled_at ? ' pada ' . $order->cancelled_at->format('d M Y H:i') : '' }}.
             </div>
         @else
-            <ol class="list-unstyled d-flex flex-wrap gap-3 mb-0">
+            <ol class="timeline">
                 @foreach(Order::TIMELINE as $i => $step)
                     @php
                         $done = $currentIdx !== false && $i < $currentIdx;
                         $now = $currentIdx !== false && $i === $currentIdx;
                     @endphp
-                    <li class="d-flex align-items-center gap-2">
-                        <span class="badge rounded-pill {{ $done ? 'bg-success' : ($now ? 'bg-primary' : 'bg-light text-muted border') }}">{{ $done ? '✓' : $i + 1 }}</span>
-                        <span class="{{ $now ? 'fw-semibold' : ($done ? '' : 'text-muted') }}">{{ Order::STATUS_LABELS[$step] }}</span>
+                    <li class="{{ $done ? 'done' : ($now ? 'current' : '') }}" @if($now) aria-current="step" @endif>
+                        {{ Order::STATUS_LABELS[$step] }}
                     </li>
                 @endforeach
             </ol>

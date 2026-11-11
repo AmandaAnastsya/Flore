@@ -8,6 +8,7 @@
 
 <div class="container py-4 catalog">
     <h1 class="h4 section-title mb-3">Tinjau Pesanan</h1>
+    @include('checkout._steps', ['step' => 3])
     @include('catalog._flash')
 
     <div class="row g-4">

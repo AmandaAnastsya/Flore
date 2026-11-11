@@ -11,10 +11,16 @@ use App\Http\Controllers\CartStemController;
 use App\Http\Controllers\StemController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', function (\App\Services\RecommendationEngine $engine) {
+    return view('welcome', [
+        'featured' => \App\Models\Bouquet::visible()->where('stock', '>', 0)->with('category')
+            ->withSum('orderItems as sold_count', 'quantity')
+            ->orderByDesc('sold_count')->latest('id')->limit(6)->get(),
+        'wizardOptions' => $engine->options(),
+    ]);
+})->name('landing');
 
 Auth::routes();
 
@@ -23,6 +29,12 @@ Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index
 Route::get('/catalog/{bouquet:slug}', [CatalogController::class, 'show'])->name('catalog.show');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{bouquet:slug}', [CatalogController::class, 'show'])->name('catalog.show');
+
+// Smart Bouquet Recommendation Wizard
+Route::get('/wizard', [RecommendationController::class, 'index'])->name('wizard.index');
+Route::get('/recommendations', [RecommendationController::class, 'recommend'])
+    ->middleware('throttle:60,1')
+    ->name('wizard.recommend');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/items/{bouquet:slug}', [CartController::class, 'store'])

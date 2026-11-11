@@ -10,6 +10,7 @@
 
 <div class="container py-4 catalog">
     <h1 class="h4 section-title mb-3">Checkout</h1>
+    @include('checkout._steps', ['step' => 2])
     @include('catalog._flash')
 
     <form method="POST" action="{{ route('checkout.store') }}" novalidate>
