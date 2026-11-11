@@ -7,7 +7,7 @@
     $user = auth()->user();
     $initials = collect(explode(' ', trim($user->name)))->filter()->take(2)->map(fn ($w) => mb_strtoupper(mb_substr($w, 0, 1)))->join('');
     $rp = fn ($v) => 'Rp ' . number_format($v, 0, ',', '.');
-    $reminderTypes = ['birthday' => 'Ulang Tahun', 'anniversary' => 'Anniversary', 'recurring_purchase' => 'Pembelian Berulang', 'custom' => 'Momen'];
+    $reminderTypes = \App\Models\Reminder::TYPE_LABELS;
 @endphp
 
 <div class="container">
@@ -81,28 +81,21 @@
         <div class="col-lg-5">
             <div class="panel">
                 <h2 class="panel-title mb-1">Smart Calendar & Reminder</h2>
-                <p class="small text-muted mb-3">Pengingat tanggal penting & momen spesialmu.</p>
+                <p class="small text-muted mb-3">Pengingat tanggal penting & pemesanan otomatis via email.</p>
 
-                @if($user->date_of_birth)
+                @forelse($upcoming as $m)
                     <div class="mini-card">
-                        <div class="fw-semibold small">Momen: Ulang Tahunmu</div>
-                        <div class="small text-muted">Tanggal: {{ $user->date_of_birth->locale('id')->translatedFormat('d F') }}</div>
-                    </div>
-                @endif
-
-                @foreach($reminders as $reminder)
-                    <div class="mini-card">
-                        <div class="fw-semibold small">{{ $reminderTypes[$reminder->type] ?? 'Momen' }}: {{ $reminder->title }}</div>
-                        <div class="small text-muted">
-                            Tanggal: {{ $reminder->occasion_date->locale('id')->translatedFormat('d F Y') }}
-                            ({{ (int) today()->diffInDays($reminder->occasion_date) }} hari lagi)
+                        <div class="d-flex justify-content-between gap-2">
+                            <div class="fw-semibold small">{{ $reminderTypes[$m['type']] ?? 'Momen' }}: {{ $m['title'] }}</div>
+                            <span class="badge-soft primary text-nowrap">{{ $m['days_left'] === 0 ? 'Hari ini' : $m['days_left'] . ' hari lagi' }}</span>
                         </div>
+                        <div class="small text-muted">Tanggal: {{ $m['occasion_date']->locale('id')->translatedFormat('d F Y') }}</div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="text-center text-muted small py-3">Belum ada momen spesial tersimpan.</div>
+                @endforelse
 
-                @if(! $user->date_of_birth && $reminders->isEmpty())
-                    <div class="text-center text-muted small py-4">Belum ada pengingat momen.</div>
-                @endif
+                <a href="{{ route('profile.edit') }}" class="btn btn-outline-plum w-100 mt-3">+ Tambah Reminder Baru</a>
             </div>
         </div>
     </div>

@@ -21,6 +21,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'phone', 'date_of_birth', 'anniversary_date', 'role', 'password',
+        'reminders_enabled', 'reminder_days',
     ];
 
     /**
@@ -44,6 +45,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'date_of_birth' => 'date',
         'anniversary_date' => 'date',
+        'reminders_enabled' => 'boolean',
+        'reminder_days' => 'integer',
         'password' => 'hashed',
     ];
     }
@@ -59,6 +62,11 @@ public function orders(): HasMany
 public function reminders(): HasMany
 {
     return $this->hasMany(Reminder::class);
+}
+
+public function specialMoments(): HasMany
+{
+    return $this->hasMany(SpecialMoment::class);
 }
 
 public function testimonials(): HasMany

@@ -12,6 +12,7 @@ use App\Http\Controllers\StemController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 Route::get('/', function (\App\Services\RecommendationEngine $engine) {
     return view('welcome', [
@@ -82,6 +83,11 @@ Route::post('orders/{order}/confirm', [AdminOrderController::class, 'confirm'])-
 Route::post('orders/{order}/reject', [AdminOrderController::class, 'reject'])->name('orders.reject');
 Route::post('orders/{order}/advance', [AdminOrderController::class, 'advance'])->name('orders.advance');
 Route::post('orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->name('orders.cancel');
+
+        // Smart Reminder: log & pemicu manual
+        Route::get('reminders', [\App\Http\Controllers\Admin\ReminderController::class, 'index'])->name('reminders.index');
+        Route::post('reminders/run', [\App\Http\Controllers\Admin\ReminderController::class, 'run'])
+            ->middleware('throttle:5,1')->name('reminders.run');
     });
 });
 Route::resource('categories', CategoryController::class)->except('show');
@@ -99,6 +105,13 @@ Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function
 });
 
 Route::middleware('auth')->group(function () {
+    // Profil & momen spesial (Smart Reminder)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/moments', [ProfileController::class, 'storeMoment'])
+        ->middleware('throttle:30,1')->name('profile.moments.store');
+    Route::delete('/profile/moments/{moment}', [ProfileController::class, 'destroyMoment'])->name('profile.moments.destroy');
+
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order:order_number}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order:order_number}/payment', [OrderController::class, 'uploadProof'])

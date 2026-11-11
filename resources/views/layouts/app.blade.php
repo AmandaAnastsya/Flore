@@ -76,6 +76,7 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                                 <a class="dropdown-item" href="{{ route('home') }}">Akun Saya</a>
+                                <a class="dropdown-item" href="{{ route('profile.edit') }}">Profil & Momen Spesial</a>
                                 <a class="dropdown-item" href="{{ route('orders.index') }}">Pesanan Saya</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ route('logout') }}"

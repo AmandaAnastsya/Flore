@@ -42,6 +42,8 @@
             Order Management @if($awaiting) <span class="count">{{ $awaiting }}</span> @endif
         </a>
 
+        <a href="{{ route('admin.reminders.index') }}" class="{{ $link('admin.reminders.*') }}">Smart Reminder</a>
+
         <div class="group">Katalog</div>
         <a href="{{ route('admin.bouquets.index') }}" class="{{ $link('admin.bouquets.*') }}">Inventory & Bouquet</a>
         <a href="{{ route('admin.categories.index') }}" class="{{ $link('admin.categories.*') }}">Kategori</a>
