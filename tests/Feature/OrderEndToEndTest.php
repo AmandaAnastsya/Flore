@@ -142,7 +142,7 @@ class OrderEndToEndTest extends TestCase
         // 9. Admin: dashboard & daftar pesanan menampilkan pesanan yang perlu diverifikasi
         $this->actingAs($this->admin);
         $this->get('/admin/dashboard')->assertOk()
-            ->assertSee($order->order_number)->assertSee('1 pembayaran perlu diverifikasi');
+            ->assertSee($order->order_number)->assertSeeText('1 pembayaran perlu diverifikasi');
         $this->get('/admin/orders?payment_status=proof_uploaded')->assertOk()->assertSee($order->order_number);
         $this->get(route('admin.orders.show', $order))->assertOk()
             ->assertSee('Konfirmasi pembayaran')->assertSee('Tolak bukti');

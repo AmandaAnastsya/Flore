@@ -145,5 +145,45 @@
             <a href="{{ route('orders.index') }}" class="btn btn-link w-100 mt-2">← Semua pesanan</a>
         </div>
     </div>
+
+    {{-- FR-09: testimonial setelah pesanan diterima --}}
+    @if($order->status === 'delivered')
+        @php $testimonial = $order->testimonial; @endphp
+        <div class="card border-0 shadow-sm mt-4"><div class="card-body">
+            <h2 class="h6 section-title mb-3">Bagikan Pengalamanmu</h2>
+
+            @if($testimonial)
+                <div class="stars mb-1" aria-label="Rating {{ $testimonial->rating }} dari 5">
+                    {!! str_repeat('★', $testimonial->rating) !!}<span class="off">{!! str_repeat('★', 5 - $testimonial->rating) !!}</span>
+                </div>
+                <p class="mb-2">“{{ $testimonial->content }}”</p>
+                <span class="badge-soft {{ \App\Models\Testimonial::STATUS_BADGES[$testimonial->status()] }}">
+                    {{ ['pending' => 'Menunggu persetujuan admin', 'approved' => 'Tampil di halaman Floré', 'rejected' => 'Tidak ditampilkan'][$testimonial->status()] }}
+                </span>
+            @else
+                <form method="POST" action="{{ route('orders.testimonial', $order->order_number) }}" novalidate>
+                    @csrf
+                    <fieldset class="mb-3">
+                        <legend class="form-label mb-1">Rating</legend>
+                        <div class="star-input">
+                            @for($s = 5; $s >= 1; $s--)
+                                <input type="radio" id="star{{ $s }}" name="rating" value="{{ $s }}" @checked((int) old('rating') === $s)>
+                                <label for="star{{ $s }}" title="{{ $s }} bintang">★<span class="visually-hidden">{{ $s }} bintang</span></label>
+                            @endfor
+                        </div>
+                        @error('rating', 'testimonial') <div class="text-danger small">{{ $message }}</div> @enderror
+                    </fieldset>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Ceritakan pengalamanmu</label>
+                        <textarea id="content" name="content" rows="3" maxlength="500"
+                                  class="form-control @error('content', 'testimonial') is-invalid @enderror"
+                                  placeholder="Bunganya segar, rangkaiannya cantik…">{{ old('content') }}</textarea>
+                        @error('content', 'testimonial') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+                    <button class="btn btn-plum">Kirim Testimonial</button>
+                </form>
+            @endif
+        </div></div>
+    @endif
 </div>
 @endsection

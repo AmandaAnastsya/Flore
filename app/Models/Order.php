@@ -113,4 +113,15 @@ public function scopeAwaitingVerification(Builder $query): Builder
     {
         return $this->hasMany(Reminder::class);
     }
+
+    public function testimonial(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Testimonial::class);
+    }
+
+    /** Pendapatan sah: pembayaran dikonfirmasi admin dan pesanan tidak dibatalkan. */
+    public function scopePaid(Builder $query): Builder
+    {
+        return $query->where('payment_status', 'confirmed')->where('status', '!=', 'cancelled');
+    }
 }

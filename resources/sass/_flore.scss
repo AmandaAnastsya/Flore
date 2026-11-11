@@ -220,3 +220,44 @@ a.tile { display: block; color: inherit; text-decoration: none; &:hover { border
 .badge-soft.primary { background: $flore-blush; color: $flore-plum; border-color: #e8c6cf; }
 .badge-soft.success { background: #edf4ee; color: #4a7151; border-color: #cfe1d2; }
 .badge-soft.danger { background: #fbecea; color: #a8423b; border-color: #f2cdc9; }
+
+// ---------- Grafik batang (admin/_bar-chart) ----------
+.bar-chart-plot { position: relative; height: 220px; padding-left: 3.25rem; }
+.bar-chart-grid { position: absolute; inset: 0 0 1.5rem 0; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+.bar-chart-grid .gridline { border-top: 1px solid $flore-line; position: relative; height: 0; }
+.bar-chart-grid .gridline span { position: absolute; left: 0; top: -.55rem; font-size: .66rem; color: #9b8a8e; }
+.bar-chart-bars { position: absolute; inset: 0 0 0 3.25rem; display: flex; align-items: flex-end; gap: 2px; padding-bottom: 1.5rem; }
+.bar-col {
+    flex: 1; height: 100%; position: relative; display: flex; align-items: flex-end; justify-content: center; outline: none; cursor: default;
+    .bar { width: min(70%, 28px); background: $flore-mauve; border-radius: 4px 4px 0 0; transition: background .15s; }
+    &:hover .bar, &:focus-visible .bar { background: $flore-plum; }
+    &:focus-visible { box-shadow: inset 0 0 0 2px rgba($flore-mauve, .35); border-radius: 4px; }
+}
+.bar-x { position: absolute; bottom: -1.4rem; font-size: .62rem; color: #9b8a8e; white-space: nowrap; }
+.bar-tip {
+    display: none; position: absolute; bottom: calc(100% - 2.5rem); left: 50%; transform: translate(-50%, -100%);
+    background: $flore-plum; color: #fff; font-size: .72rem; line-height: 1.35; padding: .45rem .6rem; border-radius: .3rem;
+    white-space: nowrap; z-index: 5; pointer-events: none; box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .15);
+    span { color: #e8c6cf; }
+}
+.bar-col:hover .bar-tip, .bar-col:focus-visible .bar-tip { display: block; }
+.bar-col:first-child .bar-tip, .bar-col:nth-child(2) .bar-tip { left: 0; transform: translate(0, -100%); }
+.bar-col:last-child .bar-tip, .bar-col:nth-last-child(2) .bar-tip { left: auto; right: 0; transform: translate(0, -100%); }
+
+// ---------- Indikator live & tab laporan ----------
+.live-dot { display: inline-block; width: .5rem; height: .5rem; border-radius: 50%; background: $flore-sage; margin-right: .2rem; animation: live-pulse 2s infinite; vertical-align: middle; }
+@keyframes live-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+.report-tabs { border-bottom: 1px solid $flore-line; gap: .25rem; }
+.report-tabs .nav-link { color: #8a7b7e; font-size: .82rem; border-bottom: 2px solid transparent; padding: .55rem .9rem; }
+.report-tabs .nav-link:hover { color: $flore-plum; }
+.report-tabs .nav-link.active { color: $flore-plum; border-bottom-color: $flore-plum; font-weight: 600; }
+
+// ---------- Rating bintang ----------
+.stars { color: #d9a441; letter-spacing: .1em; }
+.stars .off { color: #e6dcdd; }
+.star-input { display: inline-flex; flex-direction: row-reverse; gap: .15rem; }
+.star-input input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.star-input label { font-size: 1.6rem; color: #e6dcdd; cursor: pointer; line-height: 1; }
+.star-input input:checked ~ label, .star-input label:hover, .star-input label:hover ~ label { color: #d9a441; }
+.star-input input:focus-visible + label { outline: 2px solid $flore-mauve; outline-offset: 2px; border-radius: .2rem; }

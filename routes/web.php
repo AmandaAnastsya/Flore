@@ -20,6 +20,7 @@ Route::get('/', function (\App\Services\RecommendationEngine $engine) {
             ->withSum('orderItems as sold_count', 'quantity')
             ->orderByDesc('sold_count')->latest('id')->limit(6)->get(),
         'wizardOptions' => $engine->options(),
+        'testimonials' => \App\Models\Testimonial::approved()->with('user')->latest('approved_at')->limit(3)->get(),
     ]);
 })->name('landing');
 
@@ -88,6 +89,19 @@ Route::post('orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->n
         Route::get('reminders', [\App\Http\Controllers\Admin\ReminderController::class, 'index'])->name('reminders.index');
         Route::post('reminders/run', [\App\Http\Controllers\Admin\ReminderController::class, 'run'])
             ->middleware('throttle:5,1')->name('reminders.run');
+
+        // Dashboard real-time (polling JSON)
+        Route::get('dashboard/metrics', [AdminDashboardController::class, 'metrics'])->name('dashboard.metrics');
+
+        // Modul laporan
+        Route::get('reports/sales', [\App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
+        Route::get('reports/products', [\App\Http\Controllers\Admin\ReportController::class, 'products'])->name('reports.products');
+        Route::get('reports/customers', [\App\Http\Controllers\Admin\ReportController::class, 'customers'])->name('reports.customers');
+
+        // Approve testimonial
+        Route::get('testimonials', [\App\Http\Controllers\Admin\TestimonialController::class, 'index'])->name('testimonials.index');
+        Route::post('testimonials/{testimonial}/approve', [\App\Http\Controllers\Admin\TestimonialController::class, 'approve'])->name('testimonials.approve');
+        Route::post('testimonials/{testimonial}/reject', [\App\Http\Controllers\Admin\TestimonialController::class, 'reject'])->name('testimonials.reject');
     });
 });
 Route::resource('categories', CategoryController::class)->except('show');
@@ -118,4 +132,6 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:10,1')->name('orders.payment');
     Route::post('/orders/{order:order_number}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::get('/orders/{order:order_number}/proof', [OrderController::class, 'proof'])->name('orders.proof');
+    Route::post('/orders/{order:order_number}/testimonial', [\App\Http\Controllers\TestimonialController::class, 'store'])
+        ->middleware('throttle:10,1')->name('orders.testimonial');
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\WizardQuery;
 use App\Services\RecommendationEngine;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -31,6 +32,15 @@ class RecommendationController extends Controller
         ]);
 
         $result = $engine->recommend($answers);
+
+        // catat untuk KPI "Smart Wizard Queries" & preferensi customer (hanya pilihan yang valid)
+        WizardQuery::create([
+            'user_id' => $request->user()?->id,
+            ...$result->criteria,
+            'budget' => $result->budget,
+            'mode' => $result->mode,
+            'result_count' => $result->total,
+        ]);
 
         return response()->json([
             'mode' => $result->mode,

@@ -15,6 +15,7 @@
 <body class="admin-body">
 @php
     $awaiting = \App\Models\Order::awaitingVerification()->count();
+    $pendingTestimonials = \App\Models\Testimonial::withStatus('pending')->count();
     $link = fn (string $pattern) => request()->routeIs($pattern) ? 'active' : '';
 @endphp
 
@@ -48,6 +49,14 @@
         <a href="{{ route('admin.bouquets.index') }}" class="{{ $link('admin.bouquets.*') }}">Inventory & Bouquet</a>
         <a href="{{ route('admin.categories.index') }}" class="{{ $link('admin.categories.*') }}">Kategori</a>
         <a href="{{ route('admin.bouquet-images.index') }}" class="{{ $link('admin.bouquet-images.*') }}">Gambar Bouquet</a>
+
+        <div class="group">Laporan</div>
+        <a href="{{ route('admin.reports.sales') }}" class="{{ $link('admin.reports.sales') }}">Sales Report</a>
+        <a href="{{ route('admin.reports.products') }}" class="{{ $link('admin.reports.products') }}">Produk Terlaris</a>
+        <a href="{{ route('admin.reports.customers') }}" class="{{ $link('admin.reports.customers') }}">Data Customer</a>
+        <a href="{{ route('admin.testimonials.index') }}" class="{{ $link('admin.testimonials.*') }}">
+            Testimonial @if($pendingTestimonials) <span class="count">{{ $pendingTestimonials }}</span> @endif
+        </a>
     </nav>
 
     <main class="admin-main">

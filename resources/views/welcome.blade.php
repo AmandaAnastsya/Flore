@@ -67,6 +67,24 @@
             </div>
         @endforeach
     </div>
+
+    {{-- Testimonial yang disetujui admin --}}
+    @if($testimonials->isNotEmpty())
+        <h2 class="section-title h5 mt-5 mb-3">Kepercayaan Pelanggan</h2>
+        <div class="row g-3">
+            @foreach($testimonials as $t)
+                <div class="col-md-4">
+                    <figure class="panel mb-0">
+                        <div class="stars mb-2" aria-label="Rating {{ $t->rating }} dari 5">
+                            {!! str_repeat('★', $t->rating) !!}<span class="off">{!! str_repeat('★', 5 - $t->rating) !!}</span>
+                        </div>
+                        <blockquote class="small mb-2">“{{ $t->content }}”</blockquote>
+                        <figcaption class="small fw-semibold text-plum">— {{ $t->user?->name ?? 'Pelanggan Floré' }}</figcaption>
+                    </figure>
+                </div>
+            @endforeach
+        </div>
+    @endif
 </div>
 
 @include('wizard._modal')
