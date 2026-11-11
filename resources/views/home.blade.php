@@ -49,7 +49,7 @@
     <div class="row g-4">
         {{-- Riwayat pesanan --}}
         <div class="col-lg-7">
-            <div class="panel">
+            <div class="panel h-100">
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="panel-title">Order History & Invoices</h2>
                     <a href="{{ route('orders.index') }}" class="small mb-3">Lihat semua</a>
@@ -79,7 +79,7 @@
 
         {{-- Pengingat --}}
         <div class="col-lg-5">
-            <div class="panel">
+            <div class="panel h-100">
                 <h2 class="panel-title mb-1">Smart Calendar & Reminder</h2>
                 <p class="small text-muted mb-3">Pengingat tanggal penting & pemesanan otomatis via email.</p>
 

@@ -8,12 +8,14 @@
         <div class="mb-3 mb-md-0">
             <h1 class="mb-1">Craft Your Moment With Floré</h1>
             <p class="text-muted mb-3">Soft Elegance Recommendation Wizard — dikurasi berdasarkan gaya, perasaan & budget.</p>
-            <button type="button" class="btn btn-plum px-4" data-bs-toggle="modal" data-bs-target="#wizardModal">
-                Open Smart Wizard ✿
-            </button>
-            @guest
-                <a href="{{ route('register') }}" class="btn btn-link text-mauve">Buat akun</a>
-            @endguest
+            <div class="d-flex flex-wrap align-items-center gap-3">
+                <button type="button" class="btn btn-plum px-4 text-nowrap" data-bs-toggle="modal" data-bs-target="#wizardModal">
+                    Open Smart Wizard ✿
+                </button>
+                @guest
+                    <a href="{{ route('register') }}" class="text-mauve small">Buat akun</a>
+                @endguest
+            </div>
         </div>
         <a href="{{ route('catalog.index') }}" class="hero-feature text-decoration-none d-block flex-shrink-0">
             Pastel Bloom Collection
@@ -60,7 +62,7 @@
             ['Lacak Pesanan', 'Pantau status pesanan dari pembayaran sampai terkirim.'],
         ] as [$title, $text])
             <div class="col-md-4">
-                <div class="panel">
+                <div class="panel h-100">
                     <div class="panel-title mb-1" style="font-size:.85rem">{{ $title }}</div>
                     <p class="small text-muted mb-0">{{ $text }}</p>
                 </div>
@@ -74,7 +76,7 @@
         <div class="row g-3">
             @foreach($testimonials as $t)
                 <div class="col-md-4">
-                    <figure class="panel mb-0">
+                    <figure class="panel h-100 mb-0">
                         <div class="stars mb-2" aria-label="Rating {{ $t->rating }} dari 5">
                             {!! str_repeat('★', $t->rating) !!}<span class="off">{!! str_repeat('★', 5 - $t->rating) !!}</span>
                         </div>

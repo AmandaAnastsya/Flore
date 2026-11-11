@@ -10,7 +10,7 @@
             <h1 class="mb-1">Craft Your Moment With Floré</h1>
             <p class="text-muted mb-3 mb-md-0">Koleksi bouquet lembut dan elegan. Pilih sesuai momen, gaya, dan budget.</p>
         </div>
-        <button type="button" class="btn btn-plum px-4" data-bs-toggle="modal" data-bs-target="#wizardModal">
+        <button type="button" class="btn btn-plum px-4 text-nowrap flex-shrink-0" data-bs-toggle="modal" data-bs-target="#wizardModal">
             Open Smart Wizard ✿
         </button>
     </div>

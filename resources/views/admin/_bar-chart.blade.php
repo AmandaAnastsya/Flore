@@ -39,14 +39,16 @@
         </div>
     </div>
 
-    {{-- tampilan tabel untuk pembaca layar --}}
-    <table class="visually-hidden">
-        <caption>{{ $label }}</caption>
-        <thead><tr><th>Tanggal</th><th>Pendapatan</th><th>Pesanan</th></tr></thead>
-        <tbody>
-        @foreach($series as $p)
-            <tr><td>{{ $p['date']->format('d/m/Y') }}</td><td>{{ $rp($p['revenue']) }}</td><td>{{ $p['orders'] }}</td></tr>
-        @endforeach
-        </tbody>
-    </table>
+    {{-- tampilan tabel untuk pembaca layar (dibungkus div: <table> tidak patuh pada ukuran 1px dan merusak layout) --}}
+    <div class="visually-hidden">
+        <table>
+            <caption>{{ $label }}</caption>
+            <thead><tr><th>Tanggal</th><th>Pendapatan</th><th>Pesanan</th></tr></thead>
+            <tbody>
+            @foreach($series as $p)
+                <tr><td>{{ $p['date']->format('d/m/Y') }}</td><td>{{ $rp($p['revenue']) }}</td><td>{{ $p['orders'] }}</td></tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
 </figure>

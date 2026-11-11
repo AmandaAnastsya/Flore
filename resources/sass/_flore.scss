@@ -154,7 +154,7 @@ summary { cursor: pointer; }
     .stat { border: 1px solid rgba(#fff, .25); border-radius: $border-radius; padding: .8rem 1.25rem; text-align: center; background: rgba(#fff, .06); }
     .stat .num { font-size: 1.5rem; font-weight: 700; font-family: $headings-font-family; }
 }
-.panel { background: #fff; border: 1px solid $flore-line; border-radius: $border-radius; padding: 1.25rem 1.4rem; height: 100%; }
+.panel { background: #fff; border: 1px solid $flore-line; border-radius: $border-radius; padding: 1.25rem 1.4rem; }
 .panel-title { font-family: $headings-font-family; color: $flore-plum; font-size: .95rem; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 1rem; }
 .mini-card { border: 1px solid $flore-line; background: lighten($flore-blush, 2%); border-radius: $border-radius; padding: 1rem; }
 .mini-card + .mini-card { margin-top: .75rem; }
@@ -261,3 +261,30 @@ a.tile { display: block; color: inherit; text-decoration: none; &:hover { border
 .star-input label { font-size: 1.6rem; color: #e6dcdd; cursor: pointer; line-height: 1; }
 .star-input input:checked ~ label, .star-input label:hover, .star-input label:hover ~ label { color: #d9a441; }
 .star-input input:focus-visible + label { outline: 2px solid $flore-mauve; outline-offset: 2px; border-radius: .2rem; }
+
+// =============================================================
+// Polish responsif (diverifikasi di 360px, 768px, 1920px)
+// =============================================================
+@media (max-width: 575.98px) {
+    .hero { padding: 1.25rem; }
+    .hero h1 { font-size: 1.3rem; }
+    .wizard-band { padding: 1.25rem; }
+    .welcome-banner { padding: 1.25rem; }
+    .welcome-banner h1 { font-size: 1.25rem; }
+    .auth-card { padding: 1.5rem 1.25rem; }
+    .panel { padding: 1rem; }
+    .status-banner { padding: 1rem; }
+    // filter katalog dua kolom: teks pilihan tidak terpotong
+    .catalog form .form-select { font-size: .8rem; padding-left: .6rem; padding-right: 1.75rem; background-position: right .5rem center; }
+    .site-header .brand-name { font-size: 1.6rem; }
+    .flow-steps li { font-size: .7rem; padding: .55rem .35rem; }
+}
+// angka KPI panjang (Rp 24.850.000) tetap muat di kartu sempit
+.kpi .value { font-size: clamp(1.05rem, 1.6vw + .6rem, 1.45rem); overflow-wrap: anywhere; }
+// tabel admin di layar kecil: geser horizontal, bukan merusak layout
+.admin-main .table { white-space: nowrap; }
+.admin-main .table td.small, .admin-main .table td p { white-space: normal; }
+// gambar tidak pernah melebar melebihi wadah
+img { max-width: 100%; height: auto; }
+// Playfair memakai angka gaya lama (0 tampak seperti "o"); pakai angka sejajar untuk data
+.kpi .value, .welcome-banner .num, .price, .page-title, h1, h2, h3 { font-variant-numeric: lining-nums; }

@@ -138,7 +138,7 @@
             </div>
 
             <div class="modal-footer border-0 justify-content-between">
-                <button type="button" class="btn btn-outline-plum px-4" data-action="back">Kembali</button>
+                <button type="button" class="btn btn-outline-plum px-4" data-action="back" style="visibility: hidden">Kembali</button>
                 <div class="d-flex gap-2 align-items-center">
                     <button type="button" class="btn btn-link text-muted" data-action="skip">Lewati</button>
                     <button type="button" class="btn btn-plum px-4" data-action="next" disabled>Lanjut →</button>
@@ -154,7 +154,7 @@
 @push('scripts')
 <style>
     .flore-wizard { --rose: #8e5a66; --rose-dark: #6f4350; --plum: #4a2a30; --blush: #f5e9ec; --line: #f0dde2; }
-    .flore-wizard .serif { font-family: Georgia, 'Times New Roman', serif; color: var(--plum); }
+    .flore-wizard .serif { font-family: 'Playfair Display', Georgia, serif; color: var(--plum); }
     .flore-wizard .brand { font-size: 1.6rem; font-weight: 700; }
     .flore-wizard .eyebrow { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--rose); }
     .flore-wizard .progress-label { font-size: .72rem; letter-spacing: .06em; color: #6c757d; }
