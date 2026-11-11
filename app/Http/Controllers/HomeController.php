@@ -27,6 +27,16 @@ class HomeController extends Controller
         return redirect()->route('admin.dashboard');
     }
 
-    return view('home');
+    $user = auth()->user();
+
+    return view('home', [
+        'wizardOptions' => app(\App\Services\RecommendationEngine::class)->options(),
+        'openWizard' => request()->boolean('wizard'),
+        'orderCount' => $user->orders()->count(),
+        'activeCount' => $user->orders()->whereNotIn('status', ['delivered', 'cancelled'])->count(),
+        'recentOrders' => $user->orders()->with('items')->latest()->limit(3)->get(),
+        'reminders' => $user->reminders()->whereDate('occasion_date', '>=', today())
+            ->orderBy('occasion_date')->limit(3)->get(),
+    ]);
 }
 }

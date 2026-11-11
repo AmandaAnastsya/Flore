@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
 @include('admin._nav')
 @php use App\Models\Order; @endphp
 
-<div class="container py-4">
+<div class="container-fluid px-0">
     <h1 class="h4 mb-3">Kelola Pesanan</h1>
     @include('catalog._flash')
 

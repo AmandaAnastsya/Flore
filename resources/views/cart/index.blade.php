@@ -5,6 +5,7 @@
 
 <div class="container py-4 catalog">
     <h1 class="h4 section-title mb-3">Keranjang Belanja</h1>
+    @include('checkout._steps', ['step' => 1])
 
     @include('catalog._flash')
     @foreach($notices as $notice)

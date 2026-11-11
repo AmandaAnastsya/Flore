@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
 @include('admin._nav')
@@ -9,7 +9,7 @@
     $next = $order->nextStatus();
 @endphp
 
-<div class="container py-4">
+<div class="container-fluid px-0">
     @include('catalog._flash')
 
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">

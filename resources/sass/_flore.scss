@@ -1,0 +1,222 @@
+// =============================================================
+// Komponen Floré — dipakai di seluruh halaman customer & admin
+// =============================================================
+
+.serif { font-family: $headings-font-family; }
+.text-plum { color: $flore-plum !important; }
+.text-mauve { color: $flore-mauve !important; }
+.bg-blush { background: $flore-blush !important; }
+.eyebrow { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: $flore-mauve; font-weight: 500; }
+
+// ---------- Tombol ----------
+.btn-rose, .btn-plum {
+    background: $flore-plum; color: #fff; border: 1px solid $flore-plum;
+    &:hover, &:focus { background: darken($flore-plum, 6%); color: #fff; border-color: darken($flore-plum, 6%); }
+    &:disabled { background: #a89297; border-color: #a89297; color: #fff; }
+}
+.btn-mauve {
+    background: $flore-mauve; color: #fff; border: 1px solid $flore-mauve;
+    &:hover, &:focus { background: darken($flore-mauve, 8%); color: #fff; }
+}
+.btn-outline-plum {
+    border: 1px solid $flore-plum; color: $flore-plum; background: #fff;
+    &:hover, &:focus { background: $flore-plum; color: #fff; }
+}
+.btn-soft {
+    background: $flore-blush; color: $flore-plum; border: 1px solid $flore-line;
+    text-transform: uppercase; letter-spacing: .08em; font-size: .78rem;
+    &:hover, &:focus { background: darken($flore-blush, 4%); color: $flore-plum; }
+}
+.btn { letter-spacing: .02em; }
+
+// ---------- Header customer (mockup hal. 42) ----------
+.announce-bar {
+    background: $flore-plum; color: rgba(#fff, .85); font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; text-align: center; padding: .45rem 1rem;
+}
+.site-header {
+    background: $flore-mauve;
+    .navbar-brand { color: #fff; line-height: 1; }
+    .brand-name { font-family: $headings-font-family; font-size: 1.9rem; font-weight: 700; }
+    .brand-tag { display: block; font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(#fff, .75); margin-top: .2rem; }
+    .nav-link {
+        color: rgba(#fff, .85); font-size: .76rem; letter-spacing: .12em; text-transform: uppercase; padding: .5rem .85rem !important;
+        &:hover, &.active { color: #fff; }
+        &.active { box-shadow: inset 0 -2px 0 rgba(#fff, .8); }
+    }
+    .navbar-toggler { border-color: rgba(#fff, .4); }
+    .dropdown-menu { border-color: $flore-line; font-size: .85rem; }
+    .badge { background: #fff !important; color: $flore-plum; font-size: .65rem; }
+}
+
+// ---------- Footer ----------
+.site-footer {
+    background: $flore-plum; color: rgba(#fff, .7); font-size: .82rem; margin-top: 4rem;
+    h5 { color: #fff; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; font-family: $font-family-sans-serif; font-weight: 500; }
+    a { color: rgba(#fff, .7); text-decoration: none; &:hover { color: #fff; } }
+    .brand-name { font-family: $headings-font-family; color: #fff; font-size: 1.6rem; font-weight: 700; }
+    .copyright { border-top: 1px solid rgba(#fff, .1); background: darken($flore-plum, 4%); font-size: .72rem; text-align: center; padding: .8rem; }
+}
+
+// ---------- Hero & judul seksi ----------
+.hero {
+    background: $flore-blush; border: 1px solid #e8c6cf; border-radius: $border-radius;
+    padding: 1.75rem 2rem;
+    h1 { font-size: 1.6rem; text-transform: uppercase; letter-spacing: .04em; color: $flore-mauve; }
+}
+.hero-feature {
+    border: 1px dashed #d9aab6; border-radius: $border-radius; padding: 1.25rem 2rem; text-align: center;
+    font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: $flore-mauve; background: rgba(#fff, .5);
+}
+.section-title {
+    font-family: $headings-font-family; color: $flore-mauve; text-transform: uppercase; letter-spacing: .05em;
+}
+.page-title { font-family: $headings-font-family; color: $flore-plum; }
+
+// ---------- Kartu produk ----------
+.product {
+    background: #fff; border: 1px solid $flore-line; border-radius: $border-radius; overflow: hidden;
+    height: 100%; display: flex; flex-direction: column; transition: box-shadow .2s, transform .2s;
+    &:hover { box-shadow: 0 .5rem 1.25rem rgba($flore-plum, .08); transform: translateY(-2px); }
+    img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: $flore-blush; }
+    .fw-semibold { color: $body-color; }
+}
+.detail-img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: $flore-blush; border-radius: $border-radius; }
+.tags { position: absolute; top: .6rem; left: .6rem; display: flex; gap: .3rem; flex-wrap: wrap; }
+.tag { font-size: .65rem; letter-spacing: .08em; text-transform: uppercase; color: #fff; padding: .25rem .6rem; border-radius: .15rem; }
+.tag-sameday { background: $flore-plum; }
+.tag-luxury { background: $flore-dusty; }
+.tag-best { background: $flore-rose; }
+.tag-out { background: #6c757d; }
+.price { color: $flore-mauve; font-size: 1.1rem; font-weight: 600; }
+a.card-link { color: inherit; text-decoration: none; &:hover .fw-semibold { color: $flore-mauve; } }
+summary { cursor: pointer; }
+
+// ---------- Kartu & tabel umum ----------
+.card { border-color: $flore-line; }
+.card.shadow-sm { box-shadow: 0 .15rem .6rem rgba($flore-plum, .05) !important; }
+.card-header { background: #fff; font-family: $headings-font-family; color: $flore-plum; font-weight: 600; border-bottom-color: $flore-line; }
+.table > thead th {
+    font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: $flore-mauve;
+    background: lighten($flore-blush, 2%); font-weight: 600; border-bottom-color: $flore-line;
+}
+.table td { border-color: $flore-line; }
+.form-label { font-size: .78rem; font-weight: 500; color: #6b5a5e; }
+.form-control, .form-select { background-color: lighten($flore-blush, 3%); }
+.form-control:focus, .form-select:focus { background-color: #fff; }
+.alert { border-radius: $border-radius; }
+.badge { font-weight: 500; letter-spacing: .03em; }
+.pagination { --bs-pagination-active-bg: #{$flore-plum}; --bs-pagination-active-border-color: #{$flore-plum}; --bs-pagination-color: #{$flore-mauve}; }
+
+// ---------- Langkah checkout (mockup hal. 43) ----------
+.flow-steps {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin-bottom: 1.75rem; list-style: none; padding: 0;
+    li {
+        background: $flore-blush; color: #9b8a8e; border: 1px solid $flore-line; text-align: center;
+        font-size: .76rem; padding: .7rem .5rem; border-radius: .2rem;
+    }
+    li.done { background: $flore-mauve; color: #fff; border-color: $flore-mauve; }
+    li.current { background: $flore-plum; color: #fff; border-color: $flore-plum; font-weight: 600; }
+    @media (max-width: 575.98px) { grid-template-columns: repeat(2, 1fr); }
+}
+
+// ---------- Timeline pesanan (mockup hal. 45) ----------
+.timeline {
+    display: flex; list-style: none; padding: 0; margin: 0;
+    li { flex: 1; position: relative; text-align: center; font-size: .75rem; color: #9b8a8e; padding-top: 1.75rem; }
+    li::before {
+        content: ''; position: absolute; top: .45rem; left: 50%; width: .9rem; height: .9rem; border-radius: 50%;
+        transform: translateX(-50%); background: #fff; border: 2px solid #d9c3c8; z-index: 1;
+    }
+    li::after { content: ''; position: absolute; top: .82rem; left: -50%; width: 100%; height: 2px; background: #e8d3d8; }
+    li:first-child::after { display: none; }
+    li.done, li.current { color: $flore-plum; }
+    li.done::before, li.current::before { background: $flore-plum; border-color: $flore-plum; }
+    li.current::before { box-shadow: 0 0 0 4px rgba($flore-plum, .15); }
+    li.done::after, li.current::after { background: $flore-plum; }
+    li.current { font-weight: 600; }
+    @media (max-width: 575.98px) { li { font-size: .62rem; } }
+}
+.status-banner { background: $flore-plum; color: #fff; border-radius: $border-radius; padding: 1.1rem 1.4rem; }
+.status-banner .eyebrow { color: #e8c6cf; }
+
+// ---------- Auth ----------
+.auth-wrap { max-width: 460px; margin: 3rem auto; }
+.auth-wrap.wide { max-width: 640px; }
+.auth-card { background: #fff; border: 1px solid $flore-line; border-radius: $border-radius-lg; padding: 2rem 2.25rem; }
+.auth-card h1 { font-size: 1.6rem; text-align: center; }
+
+// ---------- Dashboard customer (mockup hal. 47) ----------
+.welcome-banner {
+    background: $flore-plum; color: #fff; border-radius: $border-radius; padding: 1.5rem 1.75rem;
+    h1 { color: #fff; font-size: 1.5rem; }
+    .avatar { width: 3.5rem; height: 3.5rem; border-radius: 50%; background: #dba9b4; color: $flore-plum; display: grid; place-items: center; font-weight: 700; font-size: 1.1rem; flex-shrink: 0; }
+    .stat { border: 1px solid rgba(#fff, .25); border-radius: $border-radius; padding: .8rem 1.25rem; text-align: center; background: rgba(#fff, .06); }
+    .stat .num { font-size: 1.5rem; font-weight: 700; font-family: $headings-font-family; }
+}
+.panel { background: #fff; border: 1px solid $flore-line; border-radius: $border-radius; padding: 1.25rem 1.4rem; height: 100%; }
+.panel-title { font-family: $headings-font-family; color: $flore-plum; font-size: .95rem; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 1rem; }
+.mini-card { border: 1px solid $flore-line; background: lighten($flore-blush, 2%); border-radius: $border-radius; padding: 1rem; }
+.mini-card + .mini-card { margin-top: .75rem; }
+a.tile { display: block; color: inherit; text-decoration: none; &:hover { border-color: $flore-mauve; } }
+
+// ---------- Landing: band wizard ----------
+.wizard-band { background: $flore-mauve; color: #fff; border-radius: $border-radius; padding: 1.75rem 2rem; }
+.wizard-band h2 { color: #fff; text-transform: uppercase; font-size: 1.25rem; letter-spacing: .05em; }
+
+// =============================================================
+// Admin portal (mockup hal. 44, 48, 49)
+// =============================================================
+.admin-body { background: $flore-cream; }
+.admin-topbar {
+    background: $flore-plum; color: #fff; height: 3.75rem; display: flex; align-items: center; padding: 0 1.5rem;
+    position: sticky; top: 0; z-index: 1030;
+    .brand-name { font-family: $headings-font-family; font-size: 1.45rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .portal { font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; color: #e8c6cf; border-left: 1px solid rgba(#fff, .25); padding-left: .75rem; margin-left: .75rem; }
+    .who { font-size: .78rem; color: rgba(#fff, .85); }
+    a, button.link { color: #fff; font-size: .78rem; }
+}
+.admin-shell { display: flex; min-height: calc(100vh - 3.75rem); }
+.admin-sidebar {
+    width: 230px; flex-shrink: 0; background: $flore-plum-deep; padding: 1.5rem 0;
+    a {
+        display: block; color: rgba(#fff, .62); font-size: .8rem; padding: .7rem 1.5rem; text-decoration: none;
+        border-left: 3px solid transparent;
+        &:hover { color: #fff; background: rgba(#fff, .04); }
+        &.active { color: #fff; background: rgba($flore-mauve, .45); border-left-color: #dba9b4; font-weight: 500; }
+    }
+    .group { font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(#fff, .35); padding: 1.1rem 1.5rem .4rem; }
+    .count { float: right; background: $flore-rose; color: #fff; border-radius: 1rem; font-size: .65rem; padding: .05rem .45rem; }
+}
+.admin-main { flex: 1; min-width: 0; padding: 2rem 2.25rem; }
+.admin-main h1, .admin-main .h3 { font-family: $headings-font-family; color: $flore-plum; }
+.admin-head { margin-bottom: 1.5rem; }
+.admin-head p { color: #8a7b7e; font-size: .82rem; margin: 0; }
+@media (max-width: 991.98px) {
+    .admin-shell { flex-direction: column; }
+    .admin-sidebar { width: 100%; padding: .5rem 0; display: flex; overflow-x: auto; white-space: nowrap; }
+    .admin-sidebar .group { display: none; }
+    .admin-sidebar a { border-left: 0; border-bottom: 3px solid transparent; padding: .7rem 1rem; }
+    .admin-sidebar a.active { border-bottom-color: #dba9b4; }
+    .admin-main { padding: 1.25rem 1rem; }
+}
+
+.kpi {
+    background: #fff; border: 1px solid $flore-line; border-radius: $border-radius; padding: 1rem 1.2rem; height: 100%;
+    .label { font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: #8a7b7e; }
+    .value { font-family: $headings-font-family; font-size: 1.45rem; color: $flore-plum; font-weight: 700; margin: .25rem 0; }
+    .note { font-size: .72rem; }
+    &.accent { border-left: 3px solid $flore-mauve; }
+    &.alert-kpi { background: #fdf3f2; border-color: #f3d2cf; .value { color: $danger; } }
+}
+.bar { height: .45rem; background: $flore-blush; border-radius: 1rem; overflow: hidden; }
+.bar > span { display: block; height: 100%; background: $flore-mauve; }
+
+// Badge status lembut
+.badge-soft { padding: .35rem .65rem; border-radius: .2rem; font-size: .7rem; font-weight: 500; border: 1px solid transparent; }
+.badge-soft.secondary { background: #f1eeee; color: #6c6365; }
+.badge-soft.warning { background: #fdf3e3; color: #a2621c; border-color: #f4dcb5; }
+.badge-soft.info { background: #eef1f8; color: #4c5f8a; }
+.badge-soft.primary { background: $flore-blush; color: $flore-plum; border-color: #e8c6cf; }
+.badge-soft.success { background: #edf4ee; color: #4a7151; border-color: #cfe1d2; }
+.badge-soft.danger { background: #fbecea; color: #a8423b; border-color: #f2cdc9; }

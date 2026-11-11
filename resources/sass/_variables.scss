@@ -1,7 +1,59 @@
-// Body
-$body-bg: #f8fafc;
+// =============================================================
+// Floré — "Pink Soft Elegance" (mengikuti UI di proposal Bab 4.2.3)
+// =============================================================
 
-// Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
-$font-size-base: 0.9rem;
+// Palet
+$flore-plum:      #4a2a30;   // footer, tombol utama, status aktif
+$flore-plum-deep: #2e2224;   // sidebar admin
+$flore-mauve:     #8e5a66;   // header, judul, harga
+$flore-rose:      #c96b7f;   // badge bestseller / aksen
+$flore-dusty:     #a27a84;   // badge luxury
+$flore-blush:     #f5e9ec;   // latar hero / kotak lembut
+$flore-line:      #f0dde2;   // garis kartu
+$flore-cream:     #faf6f7;   // latar halaman
+$flore-sage:      #6b8f71;   // status sukses / stok aman
+
+// Bootstrap
+$primary:   $flore-plum;
+$secondary: #8a7b7e;
+$success:   $flore-sage;
+$info:      #8c9fc4;
+$warning:   #e0a458;
+$danger:    #c4524a;
+$light:     $flore-blush;
+$dark:      $flore-plum-deep;
+
+$body-bg:    $flore-cream;
+$body-color: #3b2f31;
+$link-color: $flore-mauve;
+$border-color: $flore-line;
+
+$font-family-sans-serif: 'DM Sans', 'Nunito', system-ui, sans-serif;
+$headings-font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+$headings-color: $flore-plum;
+$headings-font-weight: 700;
+$font-size-base: 0.92rem;
 $line-height-base: 1.6;
+
+$border-radius:    .4rem;
+$border-radius-sm: .3rem;
+$border-radius-lg: .6rem;
+
+$btn-font-weight: 500;
+$btn-padding-x: 1.1rem;
+$input-border-color: #e8d3d8;
+$input-focus-border-color: $flore-mauve;
+$input-btn-focus-color: rgba($flore-mauve, .2);
+$form-check-input-checked-bg-color: $flore-plum;
+
+$card-border-color: $flore-line;
+$card-cap-bg: #fff;
+
+$table-striped-bg: $flore-cream;
+$table-hover-bg: $flore-blush;
+
+$progress-bg: $flore-blush;
+$progress-bar-bg: $flore-mauve;
+
+$navbar-dark-color: rgba(#fff, .8);
+$navbar-dark-hover-color: #fff;
