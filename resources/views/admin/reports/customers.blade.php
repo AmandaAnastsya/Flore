@@ -40,7 +40,7 @@
             @forelse($customers as $c)
                 <tr>
                     <td>
-                        <div class="fw-semibold">{{ $c->name }}</div>
+                        <a href="{{ route('admin.customers.show', $c) }}" class="fw-semibold text-decoration-none d-block">{{ $c->name }}</a>
                         <div class="small text-muted">Terdaftar {{ $c->created_at->format('d M Y') }}</div>
                     </td>
                     <td class="small">{{ $c->email }}<div class="text-muted">{{ $c->phone ?? '—' }}</div></td>

@@ -4,6 +4,7 @@
 @include('catalog._styles')
 
 <div class="container py-4 catalog">
+    @include('catalog._flash')
 
     <div class="hero mb-4 d-md-flex justify-content-between align-items-center">
         <div>

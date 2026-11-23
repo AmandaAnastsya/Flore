@@ -31,9 +31,9 @@
                         @foreach($order->items as $item)
                             <tr>
                                 <td>{{ $item->name }} @if($item->isStem()) <span class="small text-muted">(per tangkai)</span> @endif</td>
-                                <td class="text-end">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+                                <td class="text-end text-nowrap">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
                                 <td class="text-center">{{ $item->quantity }}</td>
-                                <td class="text-end">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                                <td class="text-end text-nowrap">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                             </tr>
                         @endforeach
                         </tbody>

@@ -5,6 +5,8 @@
 
 <div class="container py-4 catalog">
 
+    @include('catalog._flash')
+
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb small">
             <li class="breadcrumb-item"><a href="{{ route('catalog.index') }}">Katalog</a></li>

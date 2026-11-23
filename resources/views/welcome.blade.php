@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container catalog">
+    @include('catalog._flash')
 
     {{-- Hero --}}
     <section class="hero mb-4 d-md-flex justify-content-between align-items-center gap-4">

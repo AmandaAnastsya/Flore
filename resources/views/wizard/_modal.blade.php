@@ -324,7 +324,7 @@
                         <a href="${esc(b.url)}" class="fw-semibold text-dark text-decoration-none">${esc(b.name)}</a>
                         <div class="price my-1">${esc(b.price)}</div>
                         <div class="d-flex flex-column mb-2">
-                            ${b.reasons.map((r) => `<span class="reason ${r.startsWith('Sedikit') ? 'warn' : ''}">${esc(r)}</span>`).join('')}
+                            ${b.reasons.map((r) => `<span class="reason ${r.includes('luar budget') ? 'warn' : ''}">${esc(r)}</span>`).join('')}
                         </div>
                         ${b.low_stock ? '<div class="small text-warning mb-2">Stok menipis</div>' : ''}
                         <form method="POST" action="${esc(b.cart_url)}" class="mt-auto">

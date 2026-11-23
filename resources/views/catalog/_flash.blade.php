@@ -1,14 +1,15 @@
 @if(session('success'))
-    <div class="alert alert-success d-flex justify-content-between align-items-center">
+    <div class="alert alert-success d-flex flex-wrap justify-content-between align-items-center gap-2" role="status">
         <span>{{ session('success') }}</span>
-        @unless(request()->routeIs('cart.index'))
+        {{-- tautan keranjang hanya relevan di halaman belanja (bug UI-02: sebelumnya muncul juga di pesanan & admin) --}}
+        @if(request()->routeIs('landing', 'catalog.*', 'stems.*', 'home'))
             <a href="{{ route('cart.index') }}" class="alert-link">Lihat keranjang</a>
-        @endunless
+        @endif
     </div>
 @endif
 @if(session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
+    <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
 @endif
 @if($errors->has('quantity'))
-    <div class="alert alert-danger">{{ $errors->first('quantity') }}</div>
+    <div class="alert alert-danger" role="alert">{{ $errors->first('quantity') }}</div>
 @endif

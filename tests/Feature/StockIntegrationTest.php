@@ -173,7 +173,8 @@ class StockIntegrationTest extends TestCase
     {
         $b = $this->make('Rose Love', ['occasion' => 'anniversary']);
         $this->addToCart($b);
-        $this->get('/catalog?occasion[]=birthday')->assertDontSee('Rose Love');
+        // cek kartu produk (tautan detail), bukan teks — pesan "Rose Love ditambahkan ke keranjang" memang tampil
+        $this->get('/catalog?occasion[]=birthday')->assertDontSee(route('catalog.show', $b), false);
 
         $this->actingAs($this->admin());
         $this->put("/admin/bouquets/{$b->id}", $this->payload($b, ['occasion' => 'birthday']));

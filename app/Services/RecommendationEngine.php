@@ -29,6 +29,7 @@ class RecommendationEngine
         'relaxed_budget' => 'Belum ada yang pas di budget itu. Ini yang paling mendekati.',
         'alternatives' => 'Belum ada yang cocok dengan pilihanmu. Ini bouquet populer di budgetmu.',
         'browse' => 'Bouquet populer untukmu',
+        'outside_budget' => 'Belum ada bouquet di budget itu. Ini pilihan paling cocok yang tersedia.',
         'none' => 'Belum ada bouquet yang tersedia untuk saat ini.',
     ];
 
@@ -59,6 +60,12 @@ class RecommendationEngine
             }
         }
         $attempts[] = [$criteria ? 'alternatives' : 'browse', $range, false];
+
+        // Budget sama sekali tidak ada stoknya → tetap tawarkan yang paling cocok di luar budget,
+        // bukan jalan buntu "tidak ada bouquet" padahal toko punya stok (bug TC-FR06-02).
+        if ($range) {
+            $attempts[] = ['outside_budget', null, false];
+        }
 
         foreach ($attempts as [$mode, $searchRange, $requireMatch]) {
             $items = $this->rank($criteria, $weights, $searchRange, $range, $requireMatch);
@@ -211,6 +218,7 @@ class RecommendationEngine
 
         $price = (float) $bouquet->price;
         $withinBudget = $budgetRange === null || $this->inRange($price, $budgetRange);
+        $nearBudget = ! $withinBudget && $this->inRange($price, $this->relax($budgetRange));
 
         return [
             'bouquet' => $bouquet,
@@ -223,11 +231,11 @@ class RecommendationEngine
             'is_perfect' => $criteria !== [] && $missed === [],
             'within_budget' => $withinBudget,
             'sold' => (int) ($bouquet->sold_count ?? 0),
-            'reasons' => $this->reasons($criteria, $matched, $budgetRange, $withinBudget),
+            'reasons' => $this->reasons($criteria, $matched, $budgetRange, $withinBudget, $nearBudget),
         ];
     }
 
-    private function reasons(array $criteria, array $matched, ?array $budgetRange, bool $withinBudget): array
+    private function reasons(array $criteria, array $matched, ?array $budgetRange, bool $withinBudget, bool $nearBudget = false): array
     {
         $reasons = [];
 
@@ -236,7 +244,11 @@ class RecommendationEngine
         }
 
         if ($budgetRange) {
-            $reasons[] = $withinBudget ? 'Sesuai budget' : 'Sedikit di luar budget';
+            $reasons[] = match (true) {
+                $withinBudget => 'Sesuai budget',
+                $nearBudget => 'Sedikit di luar budget',
+                default => 'Di luar budget',
+            };
         }
 
         return $reasons;
