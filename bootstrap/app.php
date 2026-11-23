@@ -16,6 +16,16 @@ return Application::configure(basePath: dirname(__DIR__))
         'role' => \App\Http\Middleware\RoleMiddleware::class,
     ]);
 
+    // cek role SEBELUM route model binding: non-admin selalu dapat 403,
+    // tidak bisa menebak ID pesanan yang ada (404 vs 403) dan tidak memicu query database
+    $middleware->prependToPriorityList(
+        before: \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        prepend: \App\Http\Middleware\RoleMiddleware::class,
+    );
+
+    // header keamanan (anti-clickjacking, nosniff, referrer) di semua halaman web
+    $middleware->web(append: [\App\Http\Middleware\SecurityHeaders::class]);
+
     // tamu yang buka halaman admin diarahkan ke login admin
     $middleware->redirectGuestsTo(fn (Request $request) =>
         $request->is('admin/*') ? route('admin.login') : route('login')

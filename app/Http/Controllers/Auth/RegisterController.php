@@ -38,6 +38,8 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+        // batasi pendaftaran massal / bot: maksimal 10 percobaan per menit per IP
+        $this->middleware('throttle:10,1')->only('register');
     }
 
     /**

@@ -78,7 +78,7 @@
                 <div class="col-md-4">
                     <figure class="panel h-100 mb-0">
                         <div class="stars mb-2" aria-label="Rating {{ $t->rating }} dari 5">
-                            {!! str_repeat('★', $t->rating) !!}<span class="off">{!! str_repeat('★', 5 - $t->rating) !!}</span>
+                            {{ str_repeat('★', $t->rating) }}<span class="off">{{ str_repeat('★', 5 - $t->rating) }}</span>
                         </div>
                         <blockquote class="small mb-2">“{{ $t->content }}”</blockquote>
                         <figcaption class="small fw-semibold text-plum">— {{ $t->user?->name ?? 'Pelanggan Floré' }}</figcaption>

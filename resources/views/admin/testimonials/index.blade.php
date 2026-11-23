@@ -24,7 +24,7 @@
         <div class="d-flex flex-wrap justify-content-between gap-2">
             <div>
                 <div class="stars" aria-label="Rating {{ $t->rating }} dari 5">
-                    {!! str_repeat('★', $t->rating) !!}<span class="off">{!! str_repeat('★', 5 - $t->rating) !!}</span>
+                    {{ str_repeat('★', $t->rating) }}<span class="off">{{ str_repeat('★', 5 - $t->rating) }}</span>
                 </div>
                 <div class="fw-semibold">{{ $t->user?->name }}</div>
                 <div class="small text-muted">

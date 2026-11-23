@@ -29,8 +29,6 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{bouquet:slug}', [CatalogController::class, 'show'])->name('catalog.show');
-Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
-Route::get('/catalog/{bouquet:slug}', [CatalogController::class, 'show'])->name('catalog.show');
 
 // Smart Bouquet Recommendation Wizard
 Route::get('/wizard', [RecommendationController::class, 'index'])->name('wizard.index');
@@ -78,12 +76,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('bouquets', \App\Http\Controllers\Admin\BouquetController::class)->except('show');
         Route::patch('bouquets/{bouquet}/stock', [\App\Http\Controllers\Admin\BouquetController::class, 'updateStock'])
             ->name('bouquets.stock');
-            Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
-Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
-Route::post('orders/{order}/confirm', [AdminOrderController::class, 'confirm'])->name('orders.confirm');
-Route::post('orders/{order}/reject', [AdminOrderController::class, 'reject'])->name('orders.reject');
-Route::post('orders/{order}/advance', [AdminOrderController::class, 'advance'])->name('orders.advance');
-Route::post('orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->name('orders.cancel');
+
+        Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+        Route::post('orders/{order}/confirm', [AdminOrderController::class, 'confirm'])->name('orders.confirm');
+        Route::post('orders/{order}/reject', [AdminOrderController::class, 'reject'])->name('orders.reject');
+        Route::post('orders/{order}/advance', [AdminOrderController::class, 'advance'])->name('orders.advance');
+        Route::post('orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->name('orders.cancel');
 
         // Smart Reminder: log & pemicu manual
         Route::get('reminders', [\App\Http\Controllers\Admin\ReminderController::class, 'index'])->name('reminders.index');
@@ -104,12 +103,8 @@ Route::post('orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->n
         Route::post('testimonials/{testimonial}/reject', [\App\Http\Controllers\Admin\TestimonialController::class, 'reject'])->name('testimonials.reject');
     });
 });
-Route::resource('categories', CategoryController::class)->except('show');
-
-Route::get('bouquet-images', [BouquetImageController::class, 'index'])->name('bouquet-images.index');
-Route::get('bouquet-images/{bouquet}/edit', [BouquetImageController::class, 'edit'])->name('bouquet-images.edit');
-Route::put('bouquet-images/{bouquet}', [BouquetImageController::class, 'update'])->name('bouquet-images.update');
-Route::delete('bouquet-images/{bouquet}', [BouquetImageController::class, 'destroy'])->name('bouquet-images.destroy');
+// Catatan keamanan: semua route pengelolaan (kategori, gambar, dll.) HANYA boleh ada di grup admin di atas.
+// Salinan tanpa proteksi di sini pernah membuat /categories & /bouquet-images bisa diubah tanpa login.
 
 Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function () {
     Route::get('/', [CheckoutController::class, 'index'])->name('index');

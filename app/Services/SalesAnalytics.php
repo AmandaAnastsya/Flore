@@ -149,6 +149,11 @@ class SalesAnalytics
      */
     public function wizardPreferences(string $field, int $limit = 4): Collection
     {
+        // nama kolom masuk ke selectRaw → wajib whitelist agar tidak pernah bisa disisipi SQL
+        if (! in_array($field, ['occasion', 'color', 'style', 'size', 'budget'], true)) {
+            throw new \InvalidArgumentException("Kolom preferensi tidak dikenal: {$field}");
+        }
+
         $rows = WizardQuery::where('created_at', '>=', today()->subDays(29))->whereNotNull($field)
             ->selectRaw("{$field} as value, COUNT(*) as total")->groupBy($field)
             ->orderByDesc('total')->limit($limit)->get();

@@ -154,7 +154,7 @@
 
             @if($testimonial)
                 <div class="stars mb-1" aria-label="Rating {{ $testimonial->rating }} dari 5">
-                    {!! str_repeat('★', $testimonial->rating) !!}<span class="off">{!! str_repeat('★', 5 - $testimonial->rating) !!}</span>
+                    {{ str_repeat('★', $testimonial->rating) }}<span class="off">{{ str_repeat('★', 5 - $testimonial->rating) }}</span>
                 </div>
                 <p class="mb-2">“{{ $testimonial->content }}”</p>
                 <span class="badge-soft {{ \App\Models\Testimonial::STATUS_BADGES[$testimonial->status()] }}">
