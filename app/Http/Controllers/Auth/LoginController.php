@@ -30,7 +30,7 @@ class LoginController extends Controller
 {
     if ($user->isAdmin()) {
         // kalau sebelumnya mencoba membuka halaman admin tertentu, kembali ke sana
-        return redirect()->intended(route('admin.dashboard'));
+        return \App\Http\Controllers\Admin\AuthController::redirectAfterLogin($request);
     }
 
     // customer: kembalikan null supaya memakai alur bawaan ($redirectTo = '/home')
