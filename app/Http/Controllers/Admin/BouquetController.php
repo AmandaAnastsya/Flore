@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Bouquet;
 use App\Models\Category;
+use App\Services\ProductPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
@@ -44,7 +45,7 @@ class BouquetController extends Controller
         $data['slug'] = $this->uniqueSlug($data['name']);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('bouquets', 'public');
+            $data['image'] = app(ProductPhoto::class)->store($request->file('image')->getRealPath());
         }
 
         Bouquet::create($data);
@@ -72,7 +73,7 @@ class BouquetController extends Controller
             if ($bouquet->image) {
                 Storage::disk('public')->delete($bouquet->image);
             }
-            $data['image'] = $request->file('image')->store('bouquets', 'public');
+            $data['image'] = app(ProductPhoto::class)->store($request->file('image')->getRealPath());
         }
 
         $bouquet->update($data);

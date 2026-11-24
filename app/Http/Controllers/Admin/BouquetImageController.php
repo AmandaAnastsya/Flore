@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bouquet;
+use App\Services\ProductPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -35,7 +36,8 @@ class BouquetImageController extends Controller
             Storage::disk('public')->delete($bouquet->image);
         }
 
-        $path = $request->file('image')->store('bouquets', 'public');
+        // crop 4:3, clean look, logo Floré kiri bawah, simpan WebP
+        $path = app(ProductPhoto::class)->store($request->file('image')->getRealPath());
         $bouquet->update(['image' => $path]);
 
         return redirect()->route('admin.bouquet-images.index')->with('success', 'Gambar bouquet berhasil diunggah.');
