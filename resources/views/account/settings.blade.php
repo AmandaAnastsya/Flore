@@ -18,6 +18,20 @@
 
     <div class="panel mb-4">
         <h2 class="panel-title">Notifikasi Email</h2>
+        <form method="POST" action="{{ route('account.notifications.update') }}" class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-3 border-bottom">
+            @csrf @method('PUT')
+            <div>
+                <div class="form-check form-switch mb-0">
+                    <input type="hidden" name="order_updates_enabled" value="0">
+                    <input class="form-check-input" type="checkbox" role="switch" id="order_updates_enabled" name="order_updates_enabled" value="1"
+                           @checked($user->order_updates_enabled) onchange="this.form.requestSubmit ? this.form.requestSubmit() : this.form.submit()">
+                    <label class="form-check-label small fw-semibold" for="order_updates_enabled">Email update status pesanan</label>
+                </div>
+                <div class="small text-muted">Bukti transfer diverifikasi, pesanan dirangkai, dikirim kurir, dan terkirim.
+                    Invoice, kuitansi lunas, bukti ditolak & pembatalan <strong>selalu</strong> dikirim.</div>
+            </div>
+            <noscript><button class="btn btn-sm btn-outline-plum">Simpan</button></noscript>
+        </form>
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
             <div class="small">
                 Email pengingat momen spesial:

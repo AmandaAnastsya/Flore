@@ -21,7 +21,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'phone', 'date_of_birth', 'anniversary_date', 'role', 'password',
-        'reminders_enabled', 'reminder_days',
+        'reminders_enabled', 'reminder_days', 'order_updates_enabled',
     ];
 
     /**
@@ -46,6 +46,7 @@ class User extends Authenticatable
         'date_of_birth' => 'date',
         'anniversary_date' => 'date',
         'reminders_enabled' => 'boolean',
+        'order_updates_enabled' => 'boolean',
         'reminder_days' => 'integer',
         'password' => 'hashed',
     ];

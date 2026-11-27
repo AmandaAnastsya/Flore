@@ -173,6 +173,9 @@
                 </form>
             @endif
 
+            <a href="{{ route('orders.invoice', $order->order_number) }}" target="_blank" class="btn btn-outline-plum w-100 mt-2">
+                {{ $order->payment_status === 'confirmed' ? 'Unduh Kuitansi (LUNAS)' : 'Lihat Invoice' }}
+            </a>
             <a href="{{ route('orders.index') }}" class="btn btn-link w-100 mt-2">← Semua pesanan</a>
         </div>
     </div>

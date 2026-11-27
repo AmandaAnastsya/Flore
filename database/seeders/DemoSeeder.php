@@ -38,7 +38,8 @@ class DemoSeeder extends Seeder
             throw new RuntimeException('Katalog kosong. Jalankan php artisan db:seed terlebih dahulu.');
         }
 
-        DB::transaction(function () {
+        // tanpa event Order: data demo tidak memicu email invoice/status ke akun demo
+        Order::withoutEvents(fn () => DB::transaction(function () {
             $this->clearPreviousDemo();
             $customers = $this->customers();
             $couriers = $this->couriers();
@@ -48,7 +49,7 @@ class DemoSeeder extends Seeder
             $this->inventory();
             $this->production();
             $this->expenses();
-        });
+        }));
 
         $this->command?->info('Data demo dibuat. Login customer demo: clarissa@' . self::DOMAIN . ' / ' . self::PASSWORD);
     }

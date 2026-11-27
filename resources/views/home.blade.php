@@ -66,6 +66,7 @@
                         </span>
                         <div class="small mt-2">{{ Str::limit($order->items->map(fn ($i) => $i->bouquet_name ?? $i->flower_name)->filter()->join(', '), 60) }}</div>
                         <div class="small text-muted mb-2">Total: {{ $rp($order->total_amount) }}</div>
+                        <a href="{{ route('orders.invoice', $order->order_number) }}" target="_blank" class="btn btn-sm btn-outline-plum">Unduh Kuitansi</a>
                         <a href="{{ route('orders.show', $order->order_number) }}" class="btn btn-sm btn-plum">Lacak Pesanan</a>
                     </div>
                 @empty

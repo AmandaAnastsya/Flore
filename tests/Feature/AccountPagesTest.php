@@ -69,7 +69,7 @@ class AccountPagesTest extends TestCase
         $this->put('/account', ['name' => 'Clarissa V.', 'phone' => '081299990000', 'email' => $user->email])
             ->assertRedirect('/account')->assertSessionHas('success', 'Profil disimpan.');
         $this->assertSame(['Clarissa V.', '081299990000'], [$user->fresh()->name, $user->fresh()->phone]);
-        Notification::assertNothingSent();
+        Notification::assertSentOnDemandTimes(EmailChanged::class, 0);   // email tidak berubah → tidak ada pemberitahuan
     }
 
     public function test_changing_email_requires_password_and_notifies_old_address(): void

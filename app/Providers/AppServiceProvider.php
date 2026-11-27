@@ -24,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
 
+        // Email invoice & notifikasi status pesanan
+        \App\Models\Order::observe(\App\Observers\OrderObserver::class);
+
         // Studio Settings dari database menimpa default config/flore.php
         \App\Services\StudioSettings::applyToConfig();
 

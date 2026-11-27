@@ -79,6 +79,18 @@ class OrderController extends Controller
         return Storage::disk('local')->response($order->payment_proof, null, ['X-Content-Type-Options' => 'nosniff']);
     }
 
+    /** Invoice / kuitansi yang bisa dicetak atau disimpan sebagai PDF (mockup hal. 47 "Unduh Kuitansi"). */
+    public function invoice(Order $order)
+    {
+        $this->authorizeOwner($order);
+
+        return view('orders.invoice', [
+            'order' => $order->load('items', 'user'),
+            'slots' => DeliverySchedule::labels(),
+            'backUrl' => route('orders.show', $order->order_number),
+        ]);
+    }
+
     /** Foto hasil rangkaian sebelum lulus QC ("Live studio arrangement snapshot", mockup hal. 45). */
     public function qcPhoto(Order $order)
     {

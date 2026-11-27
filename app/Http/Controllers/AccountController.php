@@ -115,6 +115,15 @@ class AccountController extends Controller
         ]);
     }
 
+    /** Preferensi email update status pesanan (customer). Invoice & email penting tetap dikirim. */
+    public function updateNotifications(Request $request)
+    {
+        abort_if($request->user()->isAdmin(), 403);
+        $request->user()->forceFill(['order_updates_enabled' => $request->boolean('order_updates_enabled')])->save();
+
+        return back()->with('success', 'Pengaturan notifikasi disimpan.');
+    }
+
     public function revokeSession(Request $request, string $session)
     {
         $this->guardArea($request);

@@ -105,7 +105,10 @@
                 <div class="card border-0 shadow-sm mb-4"><div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h2 class="h6 mb-0">Produksi & Fulfillment</h2>
-                        <a href="{{ route('admin.orders.print', $order) }}" target="_blank" class="btn btn-sm btn-outline-plum">Cetak Label & Kartu</a>
+                        <span class="d-flex gap-1">
+                            <a href="{{ route('admin.orders.invoice', $order) }}" target="_blank" class="btn btn-sm btn-outline-plum">Invoice</a>
+                            <a href="{{ route('admin.orders.print', $order) }}" target="_blank" class="btn btn-sm btn-outline-plum">Cetak Label & Kartu</a>
+                        </span>
                     </div>
 
                     <div class="small text-muted mb-1">Florist</div>

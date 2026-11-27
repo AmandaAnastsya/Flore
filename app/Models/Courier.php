@@ -12,6 +12,9 @@ class Courier extends Model
 
     protected $casts = ['is_active' => 'boolean'];
 
+    /** Default sama dengan kolom database, supaya model yang baru dibuat langsung dianggap aktif. */
+    protected $attributes = ['is_active' => true];
+
     public const VEHICLES = [
         'motor' => 'Motor (Dedicated Bike)',
         'mobil' => 'Mobil (Climate Car)',

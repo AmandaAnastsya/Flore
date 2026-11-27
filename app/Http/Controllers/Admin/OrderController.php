@@ -126,6 +126,15 @@ class OrderController extends Controller
         return \Illuminate\Support\Facades\Storage::disk($disk)->response($order->qc_photo, null, ['X-Content-Type-Options' => 'nosniff']);
     }
 
+    public function invoice(Order $order)
+    {
+        return view('orders.invoice', [
+            'order' => $order->load('items', 'user'),
+            'slots' => DeliverySchedule::labels(),
+            'backUrl' => route('admin.orders.show', $order),
+        ]);
+    }
+
     /** Halaman cetak: label pengiriman + kartu ucapan. */
     public function printSlip(Order $order)
     {

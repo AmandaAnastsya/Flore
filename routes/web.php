@@ -86,6 +86,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('orders/{order}/florist', [AdminOrderController::class, 'assignFlorist'])->name('orders.florist');
         Route::post('orders/{order}/stage', [AdminOrderController::class, 'advanceStage'])->name('orders.stage');
         Route::get('orders/{order}/qc-photo', [AdminOrderController::class, 'qcPhoto'])->name('orders.qc-photo');
+        Route::get('orders/{order}/invoice', [AdminOrderController::class, 'invoice'])->name('orders.invoice');
         Route::get('orders/{order}/print', [AdminOrderController::class, 'printSlip'])->name('orders.print');
         Route::resource('florists', \App\Http\Controllers\Admin\FloristController::class)->only(['index', 'store', 'edit', 'update']);
 
@@ -183,6 +184,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/account/avatar', [\App\Http\Controllers\AccountController::class, 'updateAvatar'])->middleware('throttle:10,1')->name('account.avatar.update');
     Route::delete('/account/avatar', [\App\Http\Controllers\AccountController::class, 'destroyAvatar'])->name('account.avatar.destroy');
     Route::get('/account/settings', [\App\Http\Controllers\AccountController::class, 'settings'])->name('account.settings');
+    Route::put('/account/notifications', [\App\Http\Controllers\AccountController::class, 'updateNotifications'])->name('account.notifications.update');
     Route::delete('/account/sessions/{session}', [\App\Http\Controllers\AccountController::class, 'revokeSession'])->name('account.sessions.destroy');
     Route::post('/account/sessions/logout-others', [\App\Http\Controllers\AccountController::class, 'logoutOtherSessions'])->middleware('throttle:6,1')->name('account.sessions.others');
     Route::delete('/account', [\App\Http\Controllers\AccountController::class, 'destroy'])->middleware('throttle:6,1')->name('account.destroy');
@@ -201,6 +203,7 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:10,1')->name('orders.payment');
     Route::post('/orders/{order:order_number}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::get('/orders/{order:order_number}/proof', [OrderController::class, 'proof'])->name('orders.proof');
+    Route::get('/orders/{order:order_number}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
     Route::get('/orders/{order:order_number}/qc-photo', [OrderController::class, 'qcPhoto'])->name('orders.qc-photo');
     Route::get('/orders/{order:order_number}/delivery-photo', [OrderController::class, 'deliveryPhoto'])->name('orders.delivery-photo');
     Route::post('/orders/{order:order_number}/testimonial', [\App\Http\Controllers\TestimonialController::class, 'store'])
