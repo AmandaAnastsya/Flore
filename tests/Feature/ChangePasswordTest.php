@@ -34,8 +34,8 @@ class ChangePasswordTest extends TestCase
 
         $this->actingAs($user)->get('/account/password')->assertOk()
             ->assertSee('Ganti Password')->assertSee('Minimal 8 karakter')->assertSee('autocomplete="current-password"', false);
-        $this->get('/profile')->assertSee(route('account.password.edit'), false);
-        $this->get('/home')->assertSee('Ganti Password');
+        $this->get('/account/settings')->assertSee(route('account.password.edit'), false);
+        $this->get('/account/settings')->assertSee(route('account.password.edit'), false);
 
         $this->put('/account/password', [
             'current_password' => 'lama12345', 'password' => 'mawarPink2026', 'password_confirmation' => 'mawarPink2026',

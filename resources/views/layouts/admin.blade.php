@@ -31,7 +31,10 @@
     <span class="portal d-none d-sm-inline">Admin Portal</span>
 
     <div class="ms-auto d-flex align-items-center gap-3">
-        <a href="{{ route('admin.password.edit') }}" class="who d-none d-md-inline text-decoration-none" title="Akun & password">{{ auth()->user()->name }}</a>
+        <a href="{{ route('admin.account.profile') }}" class="who d-none d-md-inline-flex align-items-center gap-2 text-decoration-none" title="Profil saya">
+            <span class="avatar-xs" aria-hidden="true">@if(auth()->user()->avatarUrl())<img src="{{ auth()->user()->avatarUrl() }}" alt="">@else{{ auth()->user()->initials() }}@endif</span>
+            {{ auth()->user()->name }}
+        </a>
         <a href="{{ url('/') }}" class="d-none d-sm-inline">Lihat Toko</a>
         <form method="POST" action="{{ route('logout') }}" class="m-0">
             @csrf
@@ -77,7 +80,9 @@
 
         <div class="group">Pengaturan</div>
         <a href="{{ route('admin.settings.edit') }}" class="{{ $link('admin.settings.*') }}">Studio Settings</a>
-        <a href="{{ route('admin.password.edit') }}" class="{{ $link('admin.password.*') }}">Akun & Password</a>
+        <a href="{{ route('admin.account.profile') }}" class="{{ $link('admin.account.profile') }}">Profil Saya</a>
+        <a href="{{ route('admin.account.settings') }}" class="{{ $link('admin.account.settings') }}">Pengaturan Akun</a>
+        <a href="{{ route('admin.password.edit') }}" class="{{ $link('admin.password.*') }}">Ganti Password</a>
     </nav>
 
     <main class="admin-main">

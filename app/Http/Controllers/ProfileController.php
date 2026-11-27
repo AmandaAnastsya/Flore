@@ -30,8 +30,9 @@ class ProfileController extends Controller
         $user = $request->user();
 
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'regex:/^(\+62|62|0)8[0-9]{8,12}$/'],
+            // nama & no. HP kini diubah di Profil Saya (/account); tetap diterima di sini bila dikirim
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'phone' => ['sometimes', 'required', 'regex:/^(\+62|62|0)8[0-9]{8,12}$/'],
             'date_of_birth' => ['nullable', 'date', 'before:today'],
             'anniversary_date' => ['nullable', 'date', 'before_or_equal:today'],
             'reminder_days' => ['required', 'integer', Rule::in(ReminderPlanner::DAY_OPTIONS)],
@@ -55,7 +56,7 @@ class ProfileController extends Controller
                 ->delete();
         }
 
-        return redirect()->route('profile.edit')->with('success', 'Profil dan pengaturan pengingat disimpan.');
+        return redirect()->route('profile.edit')->with('success', 'Tanggal penting dan pengaturan pengingat disimpan.');
     }
 
     public function storeMoment(Request $request)

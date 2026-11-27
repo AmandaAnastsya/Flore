@@ -54,6 +54,25 @@ class User extends Authenticatable
 {
     return $this->role === 'admin';
 }
+
+    /** URL foto profil, atau null bila belum diunggah (tampilan memakai inisial). */
+    public function avatarUrl(): ?string
+    {
+        return $this->avatar ? asset('storage/' . $this->avatar) : null;
+    }
+
+    /** Dua huruf pertama nama, mis. "Clarissa Valery" → "CV". */
+    public function initials(): string
+    {
+        return collect(explode(' ', trim($this->name)))->filter()->take(2)
+            ->map(fn ($w) => mb_strtoupper(mb_substr($w, 0, 1)))->join('') ?: '?';
+    }
+
+    /** Akun yang sudah dihapus pemiliknya (data dianonimkan, riwayat pesanan disimpan untuk pembukuan). */
+    public function isDeleted(): bool
+    {
+        return str_ends_with((string) $this->email, '@deleted.flore.invalid');
+    }
 public function orders(): HasMany
 {
     return $this->hasMany(Order::class);

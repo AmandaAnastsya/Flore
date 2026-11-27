@@ -44,7 +44,7 @@ class SpecialMomentReminder extends Notification
             ->line('Siapkan rangkaian bunga yang berkesan dari sekarang supaya bisa dikirim tepat waktu.')
             ->action('Pilih Bouquet Sekarang', $catalogUrl)
             ->line('Bingung memilih? Coba Smart Recommendation Wizard: ' . route('wizard.index'))
-            ->line('Pengingat ini bisa kamu ubah atau matikan kapan saja di halaman Profil & Momen Spesial: ' . route('profile.edit'))
+            ->line('Pengingat ini bisa kamu ubah atau matikan kapan saja di halaman Momen Spesial & Pengingat: ' . route('profile.edit'))
             ->salutation("Salam hangat,\nFloré Studio");
     }
 }

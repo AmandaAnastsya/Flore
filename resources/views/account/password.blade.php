@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container py-4" style="max-width: 560px">
-    <nav class="small mb-3"><a href="{{ route('profile.edit') }}" class="text-decoration-none">← Profil & Momen Spesial</a></nav>
+    <nav class="small mb-3"><a href="{{ route('account.settings') }}" class="text-decoration-none">← Pengaturan Akun</a></nav>
     <h1 class="page-title h3 mb-1">Ganti Password</h1>
     <p class="text-muted small mb-4">Akun {{ auth()->user()->email }}</p>
 

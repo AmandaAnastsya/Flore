@@ -117,6 +117,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('supplies/{supply}/adjust', 'adjustSupply')->name('supplies.adjust');
         });
 
+        // Profil Saya & Pengaturan Akun (admin)
+        Route::get('account', [\App\Http\Controllers\AccountController::class, 'profile'])->name('account.profile');
+        Route::put('account', [\App\Http\Controllers\AccountController::class, 'updateProfile'])->middleware('throttle:10,1')->name('account.profile.update');
+        Route::post('account/avatar', [\App\Http\Controllers\AccountController::class, 'updateAvatar'])->middleware('throttle:10,1')->name('account.avatar.update');
+        Route::delete('account/avatar', [\App\Http\Controllers\AccountController::class, 'destroyAvatar'])->name('account.avatar.destroy');
+        Route::get('account/settings', [\App\Http\Controllers\AccountController::class, 'settings'])->name('account.settings');
+        Route::delete('account/sessions/{session}', [\App\Http\Controllers\AccountController::class, 'revokeSession'])->name('account.sessions.destroy');
+        Route::post('account/sessions/logout-others', [\App\Http\Controllers\AccountController::class, 'logoutOtherSessions'])->middleware('throttle:6,1')->name('account.sessions.others');
+
         // Ganti password admin
         Route::get('account/password', [\App\Http\Controllers\PasswordController::class, 'edit'])->name('password.edit');
         Route::put('account/password', [\App\Http\Controllers\PasswordController::class, 'update'])
@@ -168,6 +177,15 @@ Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function
 Route::middleware('auth')->group(function () {
     // Profil & momen spesial (Smart Reminder)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Profil Saya & Pengaturan Akun (customer)
+    Route::get('/account', [\App\Http\Controllers\AccountController::class, 'profile'])->name('account.profile');
+    Route::put('/account', [\App\Http\Controllers\AccountController::class, 'updateProfile'])->middleware('throttle:10,1')->name('account.profile.update');
+    Route::post('/account/avatar', [\App\Http\Controllers\AccountController::class, 'updateAvatar'])->middleware('throttle:10,1')->name('account.avatar.update');
+    Route::delete('/account/avatar', [\App\Http\Controllers\AccountController::class, 'destroyAvatar'])->name('account.avatar.destroy');
+    Route::get('/account/settings', [\App\Http\Controllers\AccountController::class, 'settings'])->name('account.settings');
+    Route::delete('/account/sessions/{session}', [\App\Http\Controllers\AccountController::class, 'revokeSession'])->name('account.sessions.destroy');
+    Route::post('/account/sessions/logout-others', [\App\Http\Controllers\AccountController::class, 'logoutOtherSessions'])->middleware('throttle:6,1')->name('account.sessions.others');
+    Route::delete('/account', [\App\Http\Controllers\AccountController::class, 'destroy'])->middleware('throttle:6,1')->name('account.destroy');
     // Ganti password (customer)
     Route::get('/account/password', [\App\Http\Controllers\PasswordController::class, 'edit'])->name('account.password.edit');
     Route::put('/account/password', [\App\Http\Controllers\PasswordController::class, 'update'])

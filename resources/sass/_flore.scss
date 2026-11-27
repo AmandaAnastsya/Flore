@@ -398,3 +398,18 @@ img { max-width: 100%; height: auto; }
 .password-rules li::before { content: "○ "; }
 .password-rules li.ok { color: $flore-sage; }
 .password-rules li.ok::before { content: "✓ "; }
+
+// ---------- Profil & pengaturan akun ----------
+.avatar-xs { display: inline-flex; align-items: center; justify-content: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; overflow: hidden;
+    background: #e8c6cf; color: $flore-plum; font-size: .62rem; font-weight: 700; vertical-align: middle; margin-right: .3rem; letter-spacing: 0; }
+.avatar-xs img, .avatar-lg img, .avatar img { width: 100%; height: 100%; object-fit: cover; }
+.avatar { overflow: hidden; }
+.avatar-lg { width: 96px; height: 96px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    background: $flore-blush; color: $flore-plum; font-family: $headings-font-family; font-size: 2rem; font-weight: 700; border: 3px solid #fff; box-shadow: 0 0 0 1px $flore-line; flex-shrink: 0; }
+.account-stats { margin: 0; }
+.account-stats > div { display: flex; justify-content: space-between; padding: .45rem 0; border-bottom: 1px dashed $flore-line; font-size: .85rem; }
+.account-stats dt { font-weight: 400; color: #8a7b7e; }
+.account-stats dd { margin: 0; font-weight: 600; color: $flore-plum; }
+.session-list { list-style: none; padding: 0; margin: .5rem 0 0; }
+.session-list li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .6rem 0; border-bottom: 1px solid $flore-line; }
+.danger-zone { border-color: #f2cdc9; }

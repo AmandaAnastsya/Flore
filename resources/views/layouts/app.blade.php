@@ -72,13 +72,17 @@
                     @else
                         <li class="nav-item dropdown">
                             <a id="userMenu" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="avatar-xs" aria-hidden="true">
+                                    @if(Auth::user()->avatarUrl()) <img src="{{ Auth::user()->avatarUrl() }}" alt=""> @else {{ Auth::user()->initials() }} @endif
+                                </span>
                                 {{ Str::limit(Auth::user()->name, 16) }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                                 <a class="dropdown-item" href="{{ route('home') }}">Akun Saya</a>
-                                <a class="dropdown-item" href="{{ route('profile.edit') }}">Profil & Momen Spesial</a>
-                                <a class="dropdown-item" href="{{ route('account.password.edit') }}">Ganti Password</a>
+                                <a class="dropdown-item" href="{{ route('account.profile') }}">Profil Saya</a>
+                                <a class="dropdown-item" href="{{ route('profile.edit') }}">Momen Spesial & Pengingat</a>
                                 <a class="dropdown-item" href="{{ route('orders.index') }}">Pesanan Saya</a>
+                                <a class="dropdown-item" href="{{ route('account.settings') }}">Pengaturan Akun</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>

@@ -23,7 +23,7 @@
     {{-- Banner sapaan --}}
     <section class="welcome-banner mb-4 d-md-flex justify-content-between align-items-center gap-4">
         <div class="d-flex align-items-center gap-3 mb-3 mb-md-0">
-            <div class="avatar" aria-hidden="true">{{ $initials }}</div>
+            <a href="{{ route('account.profile') }}" class="avatar text-decoration-none" title="Profil saya">@if($user->avatarUrl())<img src="{{ $user->avatarUrl() }}" alt="Foto profil">@else{{ $initials }}@endif</a>
             <div>
                 <h1 class="mb-1">Halo, {{ $user->name }}!</h1>
                 <div class="small" style="color: rgba(255,255,255,.75)">Selamat datang kembali di Floré. Siap merangkai momen berikutnya?</div>

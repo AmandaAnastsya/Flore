@@ -39,7 +39,7 @@ class SmartReminderTest extends TestCase
         $this->get('/profile')->assertRedirect('/login');
 
         $this->actingAs($this->customer())->get('/profile')->assertOk()
-            ->assertSee('Profil & Momen Spesial')
+            ->assertSee('Momen Spesial & Pengingat', false)
             ->assertSee('name="date_of_birth"', false)
             ->assertSee('name="anniversary_date"', false)
             ->assertSee('Tambah Reminder Baru');

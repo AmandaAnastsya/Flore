@@ -48,6 +48,7 @@ class FlowerSeeder extends Seeder
             if (! $flower->exists) {
                 $flower->stock = $stock;
                 $flower->reorder_level = self::REORDER_LEVEL;
+                $flower->last_restocked_at = now();   // kesegaran dihitung dari tanggal tiba
             }
 
             $flower->save();

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Profil & Momen Spesial')
+@section('title', 'Momen Spesial & Pengingat')
 
 @section('content')
 @php
@@ -11,42 +11,25 @@
 <div class="container">
     <div class="mb-4">
         <div class="eyebrow">My Account</div>
-        <h1 class="page-title h3 mb-1">Profil & Momen Spesial</h1>
+        <h1 class="page-title h3 mb-1">Momen Spesial & Pengingat</h1>
         <p class="text-muted small mb-0">Simpan tanggal penting — Floré akan mengirim email pengingat sebelum harinya tiba.</p>
     </div>
 
     @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
     @if(session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif
 
+    @include('account._tabs')
+
     <div class="row g-4">
         <div class="col-lg-7">
-            {{-- Data diri & momen pribadi --}}
+            {{-- Momen pribadi & pengaturan pengingat --}}
             <form method="POST" action="{{ route('profile.update') }}" class="panel mb-4" novalidate>
                 @csrf
                 @method('PUT')
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <h2 class="panel-title">Data Diri</h2>
-                    <a href="{{ route('account.password.edit') }}" class="small mb-3">Ganti password →</a>
-                </div>
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <label for="name" class="form-label">Nama lengkap</label>
-                        <input id="name" name="name" value="{{ old('name', $user->name) }}" maxlength="255"
-                               class="form-control @error('name') is-invalid @enderror" required>
-                        @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                    </div>
-                    <div class="col-md-6">
-                        <label for="phone" class="form-label">No. HP</label>
-                        <input id="phone" name="phone" value="{{ old('phone', $user->phone) }}" placeholder="081234567890"
-                               class="form-control @error('phone') is-invalid @enderror" required>
-                        @error('phone') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label">Email</label>
-                        <input value="{{ $user->email }}" class="form-control" disabled>
-                        <div class="form-text">Email pengingat dikirim ke alamat ini.</div>
-                    </div>
+                <div class="small text-muted mb-3">
+                    Email pengingat dikirim ke <strong>{{ $user->email }}</strong> ·
+                    <a href="{{ route('account.profile') }}">ubah nama, no. HP & email di Profil Saya</a>
                 </div>
 
                 <h2 class="panel-title">Momen Spesialku</h2>

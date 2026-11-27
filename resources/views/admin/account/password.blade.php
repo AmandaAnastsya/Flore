@@ -8,6 +8,7 @@
 </div>
 
 @include('catalog._flash')
+@include('admin.account._tabs')
 
 <div class="panel" style="max-width: 560px">
     <h2 class="panel-title">Ganti Password Admin</h2>
