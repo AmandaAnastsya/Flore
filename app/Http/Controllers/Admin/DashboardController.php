@@ -29,6 +29,13 @@ class DashboardController extends Controller
             'lowStockBouquets' => $stock['bouquets']->take(6),
             'lowStockFlowers' => $stock['flowers']->take(6),
             'lowStockCount' => $stock['bouquets']->count() + $stock['flowers']->count(),
+
+            // Fresh Floral Inventory & Cold-Room Stock (mockup hal. 44): yang paling mendesak di atas
+            'floralStock' => \App\Models\Flower::active()->get()
+                ->sortBy(fn ($f) => [
+                    match (true) { $f->needsRestock() => 0, $f->freshnessState() === 'expired' => 1, $f->freshnessState() === 'aging' => 2, default => 3 },
+                    $f->stock,
+                ])->take(6)->values(),
         ]);
     }
 

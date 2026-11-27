@@ -157,6 +157,42 @@
     </div>
 </div>
 
+{{-- Fresh Floral Inventory & Cold-Room Stock (mockup hal. 44) --}}
+@if($floralStock->isNotEmpty())
+    @php
+        $freshText = ['fresh' => ['Segar', 'success'], 'aging' => ['Segera pakai', 'warning'], 'expired' => ['Lewat umur segar', 'danger'], 'unknown' => ['Tgl tiba belum dicatat', 'secondary']];
+    @endphp
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+        <h2 class="section-title h6 mb-0">Fresh Floral Inventory & Cold-Room Stock</h2>
+        <a href="{{ route('admin.inventory.index') }}" class="small">Inventory Hub →</a>
+    </div>
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead><tr><th>Flower Stem Type</th><th>Origin / Supplier</th><th>In Stock</th><th>Reorder Level</th><th>Kesegaran</th><th class="text-end">Status / Action</th></tr></thead>
+                <tbody>
+                @foreach($floralStock as $f)
+                    @php [$level, $tone] = \App\Models\Flower::LEVELS[$f->inventoryLevel()]; [$fresh, $freshTone] = $freshText[$f->freshnessState()]; @endphp
+                    <tr>
+                        <td class="fw-semibold">{{ $f->name }}</td>
+                        <td class="small text-muted">{{ $f->origin ?? '—' }}</td>
+                        <td>{{ number_format($f->stock, 0, ',', '.') }} Stems</td>
+                        <td class="text-muted">{{ $f->reorder_level }} Stems</td>
+                        <td><span class="badge-soft {{ $freshTone }}">{{ $fresh }}{{ $f->freshnessPercent() !== null ? ' · ' . $f->freshnessPercent() . '%' : '' }}</span></td>
+                        <td class="text-end">
+                            <span class="badge-soft {{ $tone }} me-2">{{ $level }}</span>
+                            @if($f->needsRestock() || $f->freshnessState() === 'expired')
+                                <a href="{{ route('admin.inventory.index', ['q' => $f->name]) }}" class="btn btn-sm btn-outline-plum">{{ $f->needsRestock() ? 'Restock' : 'Cek & Buang' }}</a>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+@endif
+
 {{-- Stok --}}
 @if($lowStockCount)
     <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
@@ -187,7 +223,8 @@
                         <td>{{ $item->stock }} tangkai</td>
                         <td class="text-muted">{{ $item->reorder_level }}</td>
                         <td class="text-end">
-                            <span class="badge-soft {{ $item->stock <= 0 ? 'danger' : 'warning' }}">{{ $item->stock <= 0 ? 'Habis' : 'Restock' }}</span>
+                            <span class="badge-soft {{ $item->stock <= 0 ? 'danger' : 'warning' }} me-2">{{ $item->stock <= 0 ? 'Habis' : 'Sisa ' . $item->stock }}</span>
+                            <a href="{{ route('admin.inventory.index', ['q' => $item->name]) }}" class="btn btn-sm btn-outline-plum">Restock</a>
                         </td>
                     </tr>
                 @endforeach

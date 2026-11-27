@@ -14,6 +14,12 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+
+// Halaman informasi toko (mockup hal. 53–55)
+Route::get('/our-story', [\App\Http\Controllers\PageController::class, 'story'])->name('pages.story');
+Route::get('/care-guide', [\App\Http\Controllers\PageController::class, 'care'])->name('pages.care');
+Route::get('/faq', [\App\Http\Controllers\PageController::class, 'faq'])->name('pages.faq');
+
 Route::get('/', function (\App\Services\RecommendationEngine $engine) {
     return view('welcome', [
         'featured' => \App\Models\Bouquet::visible()->where('stock', '>', 0)->with('category')

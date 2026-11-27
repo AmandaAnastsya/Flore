@@ -413,3 +413,40 @@ img { max-width: 100%; height: auto; }
 .session-list { list-style: none; padding: 0; margin: .5rem 0 0; }
 .session-list li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .6rem 0; border-bottom: 1px solid $flore-line; }
 .danger-zone { border-color: #f2cdc9; }
+
+// =============================================================
+// Halaman informasi: Our Story, Care Guide, FAQ (mockup hal. 53–55)
+// =============================================================
+.info-page { max-width: 980px; }
+.info-hero { border-radius: $border-radius; padding: 2.5rem 1.5rem; text-align: center; color: #fff; background: $flore-plum; }
+.info-hero.sage { background: $flore-sage; }
+.info-hero h1 { color: #fff; font-size: clamp(1.4rem, 2.5vw + .8rem, 2rem); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .5rem; }
+.info-hero p { color: rgba(#fff, .85); }
+.story-profile { display: grid; grid-template-columns: 240px 1fr; gap: 1.75rem; align-items: center; }
+.story-photo { aspect-ratio: 4 / 3; border-radius: $border-radius; overflow: hidden; background: $flore-blush; display: flex; align-items: center; justify-content: center; color: $flore-mauve; }
+.story-photo img { width: 100%; height: 100%; object-fit: cover; }
+.philosophy-card { background: #fff; border: 1px solid $flore-line; border-top: 12px solid $flore-blush; border-radius: $border-radius; padding: 1.1rem 1.2rem; font-size: .88rem; }
+.philosophy-card.plum { border-top-color: $flore-plum; }
+.philosophy-card.blush { border-top-color: #d9a3b0; }
+.philosophy-card h3 { font-family: $font-family-sans-serif; font-size: .95rem; font-weight: 600; color: $flore-plum; }
+.florist-card { display: flex; gap: .85rem; align-items: center; border: 1px solid $flore-line; border-radius: $border-radius; padding: .8rem 1rem; background: #fff; }
+.florist-avatar { width: 3.2rem; height: 3.2rem; border-radius: 50%; background: #d9a3b0; color: $flore-plum; border: 2px solid $flore-plum;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+.story-quote { background: #fbf3f5; border: 1px solid #ead0d7; border-radius: $border-radius; padding: 1.75rem; text-align: center; margin: 0; }
+.story-quote p { font-size: 1.05rem; color: $flore-plum; }
+.story-quote footer { color: #8a7b7e; font-size: .85rem; }
+.care-steps { list-style: none; padding: 0; }
+.care-steps li { display: flex; gap: 1.25rem; align-items: center; background: #fff; border: 1px solid $flore-line; border-radius: $border-radius; padding: 1rem 1.25rem; margin-bottom: .75rem; }
+.care-steps h3 { font-family: $font-family-sans-serif; font-size: .95rem; font-weight: 600; margin-bottom: .2rem; color: $flore-plum; }
+.care-steps p { font-size: .87rem; color: #5d4f52; }
+.step-no { width: 3rem; height: 3rem; border-radius: 50%; border: 1.5px solid $flore-plum; display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; color: $flore-plum; background: #fbf3f5; flex-shrink: 0; }
+.care-table thead th { background: $flore-plum; color: #fff; font-weight: 500; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+.faq-points { padding-left: 1.1rem; font-size: .9rem; }
+.faq-points li + li { margin-top: .45rem; }
+.faq-item { background: #fff; border: 1px solid $flore-line; border-left: 5px solid $flore-plum; border-radius: $border-radius; padding: .9rem 1.2rem; margin-bottom: .75rem; }
+.faq-item:nth-child(2) { border-left-color: #c9563c; }
+.faq-item summary { cursor: pointer; font-weight: 600; color: $flore-plum; }
+.faq-item p, .faq-item ol { margin: .6rem 0 0; font-size: .88rem; color: #5d4f52; }
+.faq-contact { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; background: #fbf3f5; border: 1px solid #ead0d7; border-radius: $border-radius; padding: 1.25rem 1.5rem; }
+@media (max-width: 767.98px) { .story-profile { grid-template-columns: 1fr; } }

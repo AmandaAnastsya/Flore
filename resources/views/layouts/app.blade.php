@@ -44,6 +44,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('wizard.index') }}">Smart Wizard</a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('pages.*') ? 'active' : '' }}" href="#" id="infoMenu"
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">Tentang Kami</a>
+                        <div class="dropdown-menu" aria-labelledby="infoMenu">
+                            <a class="dropdown-item" href="{{ route('pages.story') }}">Our Story</a>
+                            <a class="dropdown-item" href="{{ route('pages.care') }}">Care Guide</a>
+                            <a class="dropdown-item" href="{{ route('pages.faq') }}">FAQ & Pengiriman</a>
+                        </div>
+                    </li>
                     @auth
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}" href="{{ route('orders.index') }}">Pesanan Saya</a>
@@ -112,6 +121,9 @@
                         <li class="mb-1"><a href="{{ route('catalog.index') }}">Katalog Bouquet</a></li>
                         <li class="mb-1"><a href="{{ route('wizard.index') }}">Smart Recommendation Wizard</a></li>
                         <li class="mb-1"><a href="{{ route('orders.index') }}">Lacak Pesanan</a></li>
+                        <li class="mb-1"><a href="{{ route('pages.story') }}">Our Story</a></li>
+                        <li class="mb-1"><a href="{{ route('pages.care') }}">Care Guide</a></li>
+                        <li class="mb-1"><a href="{{ route('pages.faq') }}">FAQ & Shipping Policy</a></li>
                     </ul>
                 </div>
                 <div class="col-6 col-md-4">
