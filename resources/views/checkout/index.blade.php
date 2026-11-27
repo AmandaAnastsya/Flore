@@ -61,7 +61,7 @@
                             @error('delivery_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             <div class="form-text">
                                 @if($sameDayOk)
-                                    Semua bouquet di keranjangmu bisa dikirim hari ini (min. {{ \App\Services\DeliverySchedule::LEAD_HOURS }} jam dari sekarang).
+                                    Semua bouquet di keranjangmu bisa dikirim hari ini (min. {{ \App\Services\DeliverySchedule::leadHours() }} jam dari sekarang).
                                 @else
                                     Pengiriman paling cepat besok (ada bouquet yang tidak same-day).
                                 @endif

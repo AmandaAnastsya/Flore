@@ -31,7 +31,7 @@ class CheckoutController extends Controller
             'user' => auth()->user(),
             'sameDayOk' => $sameDayOk,
             'minDate' => DeliverySchedule::earliestDate($sameDayOk, $now)->toDateString(),
-            'maxDate' => $now->copy()->addDays(DeliverySchedule::MAX_DAYS)->toDateString(),
+            'maxDate' => $now->copy()->addDays(DeliverySchedule::maxDays())->toDateString(),
             'today' => $now->toDateString(),
             'todaySlots' => $sameDayOk ? DeliverySchedule::slotsFor($now->copy()->startOfDay(), $now) : [],
             'slots' => DeliverySchedule::labels(),

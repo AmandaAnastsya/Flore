@@ -30,7 +30,7 @@ class OrderController extends Controller
         $this->authorizeOwner($order);
 
         return view('orders.show', [
-            'order' => $order->load('items'),
+            'order' => $order->load('items', 'courier'),
             'slots' => DeliverySchedule::labels(),
             'bank' => config('flore.payment'),
         ]);
@@ -77,6 +77,26 @@ class OrderController extends Controller
         abort_unless($order->payment_proof && Storage::disk('local')->exists($order->payment_proof), 404);
 
         return Storage::disk('local')->response($order->payment_proof, null, ['X-Content-Type-Options' => 'nosniff']);
+    }
+
+    /** Foto hasil rangkaian sebelum lulus QC ("Live studio arrangement snapshot", mockup hal. 45). */
+    public function qcPhoto(Order $order)
+    {
+        $this->authorizeOwner($order);
+        $disk = \App\Services\FulfillmentService::PHOTO_DISK;
+        abort_unless($order->qc_photo && Storage::disk($disk)->exists($order->qc_photo), 404);
+
+        return Storage::disk($disk)->response($order->qc_photo, null, ['X-Content-Type-Options' => 'nosniff']);
+    }
+
+    /** Foto serah terima dari kurir (Proof of Delivery) — hanya pemilik pesanan. */
+    public function deliveryPhoto(Order $order)
+    {
+        $this->authorizeOwner($order);
+        $disk = \App\Services\DeliveryDispatch::PHOTO_DISK;
+        abort_unless($order->delivery_photo && Storage::disk($disk)->exists($order->delivery_photo), 404);
+
+        return Storage::disk($disk)->response($order->delivery_photo, null, ['X-Content-Type-Options' => 'nosniff']);
     }
 
     private function authorizeOwner(Order $order): void

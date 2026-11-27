@@ -83,6 +83,53 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('orders/{order}/reject', [AdminOrderController::class, 'reject'])->name('orders.reject');
         Route::post('orders/{order}/advance', [AdminOrderController::class, 'advance'])->name('orders.advance');
         Route::post('orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->name('orders.cancel');
+        Route::post('orders/{order}/florist', [AdminOrderController::class, 'assignFlorist'])->name('orders.florist');
+        Route::post('orders/{order}/stage', [AdminOrderController::class, 'advanceStage'])->name('orders.stage');
+        Route::get('orders/{order}/qc-photo', [AdminOrderController::class, 'qcPhoto'])->name('orders.qc-photo');
+        Route::get('orders/{order}/print', [AdminOrderController::class, 'printSlip'])->name('orders.print');
+        Route::resource('florists', \App\Http\Controllers\Admin\FloristController::class)->only(['index', 'store', 'edit', 'update']);
+
+        // Logistics & Courier Dispatch (proposal hal. 50)
+        Route::get('logistics', [\App\Http\Controllers\Admin\LogisticsController::class, 'index'])->name('logistics.index');
+        Route::post('logistics/{order}/assign', [\App\Http\Controllers\Admin\LogisticsController::class, 'assign'])->name('logistics.assign');
+        Route::post('logistics/{order}/dispatch', [\App\Http\Controllers\Admin\LogisticsController::class, 'depart'])->name('logistics.dispatch');
+        Route::post('logistics/{order}/reroute', [\App\Http\Controllers\Admin\LogisticsController::class, 'reroute'])->name('logistics.reroute');
+        Route::post('logistics/{order}/issue', [\App\Http\Controllers\Admin\LogisticsController::class, 'issue'])->name('logistics.issue');
+        Route::post('logistics/{order}/issue/resolve', [\App\Http\Controllers\Admin\LogisticsController::class, 'resolveIssue'])->name('logistics.issue.resolve');
+        Route::post('logistics/{order}/deliver', [\App\Http\Controllers\Admin\LogisticsController::class, 'deliver'])->name('logistics.deliver');
+        Route::get('logistics/{order}/photo', [\App\Http\Controllers\Admin\LogisticsController::class, 'photo'])->name('logistics.photo');
+        Route::resource('couriers', \App\Http\Controllers\Admin\CourierController::class)->only(['index', 'store', 'edit', 'update']);
+
+        // Fresh Floral & Supply Inventory Hub (mockup hal. 49)
+        Route::controller(\App\Http\Controllers\Admin\InventoryController::class)->prefix('inventory')->name('inventory.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('flowers/create', 'createFlower')->name('flowers.create');
+            Route::post('flowers', 'storeFlower')->name('flowers.store');
+            Route::get('flowers/{flower}/edit', 'editFlower')->name('flowers.edit');
+            Route::put('flowers/{flower}', 'updateFlower')->name('flowers.update');
+            Route::get('supplies/create', 'createSupply')->name('supplies.create');
+            Route::post('supplies', 'storeSupply')->name('supplies.store');
+            Route::get('supplies/{supply}/edit', 'editSupply')->name('supplies.edit');
+            Route::put('supplies/{supply}', 'updateSupply')->name('supplies.update');
+            Route::post('flowers/{flower}/restock', 'restockFlower')->name('flowers.restock');
+            Route::post('flowers/{flower}/adjust', 'adjustFlower')->name('flowers.adjust');
+            Route::post('supplies/{supply}/restock', 'restockSupply')->name('supplies.restock');
+            Route::post('supplies/{supply}/adjust', 'adjustSupply')->name('supplies.adjust');
+        });
+
+        // Ganti password admin
+        Route::get('account/password', [\App\Http\Controllers\PasswordController::class, 'edit'])->name('password.edit');
+        Route::put('account/password', [\App\Http\Controllers\PasswordController::class, 'update'])
+            ->middleware('throttle:6,1')->name('password.update');
+
+        // Studio Settings
+        Route::get('settings', [\App\Http\Controllers\Admin\SettingsController::class, 'edit'])->name('settings.edit');
+        Route::put('settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
+
+        // Smart Wizard & AI Insights (proposal hal. 51)
+        Route::get('wizard', [\App\Http\Controllers\Admin\WizardInsightController::class, 'index'])->name('wizard.index');
+        Route::put('wizard/weights', [\App\Http\Controllers\Admin\WizardInsightController::class, 'updateWeights'])->name('wizard.weights');
+        Route::post('wizard/weights/reset', [\App\Http\Controllers\Admin\WizardInsightController::class, 'resetWeights'])->name('wizard.weights.reset');
 
         // Smart Reminder: log & pemicu manual
         Route::get('reminders', [\App\Http\Controllers\Admin\ReminderController::class, 'index'])->name('reminders.index');
@@ -95,6 +142,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Modul laporan
         Route::get('reports/sales', [\App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
         Route::get('reports/products', [\App\Http\Controllers\Admin\ReportController::class, 'products'])->name('reports.products');
+        Route::get('reports/expenses', [\App\Http\Controllers\Admin\ReportController::class, 'expenses'])->name('reports.expenses');
+        Route::post('reports/expenses', [\App\Http\Controllers\Admin\ReportController::class, 'storeExpense'])->name('reports.expenses.store');
+        Route::delete('reports/expenses/{expense}', [\App\Http\Controllers\Admin\ReportController::class, 'destroyExpense'])->name('reports.expenses.destroy');
+        Route::get('reports/inventory', [\App\Http\Controllers\Admin\ReportController::class, 'inventory'])->name('reports.inventory');
         Route::get('reports/customers', [\App\Http\Controllers\Admin\ReportController::class, 'customers'])->name('reports.customers');
         Route::get('customers/{user}', [\App\Http\Controllers\Admin\CustomerController::class, 'show'])->name('customers.show');
 
@@ -117,6 +168,10 @@ Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function
 Route::middleware('auth')->group(function () {
     // Profil & momen spesial (Smart Reminder)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Ganti password (customer)
+    Route::get('/account/password', [\App\Http\Controllers\PasswordController::class, 'edit'])->name('account.password.edit');
+    Route::put('/account/password', [\App\Http\Controllers\PasswordController::class, 'update'])
+        ->middleware('throttle:6,1')->name('account.password.update');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/moments', [ProfileController::class, 'storeMoment'])
         ->middleware('throttle:30,1')->name('profile.moments.store');
@@ -128,6 +183,8 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:10,1')->name('orders.payment');
     Route::post('/orders/{order:order_number}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::get('/orders/{order:order_number}/proof', [OrderController::class, 'proof'])->name('orders.proof');
+    Route::get('/orders/{order:order_number}/qc-photo', [OrderController::class, 'qcPhoto'])->name('orders.qc-photo');
+    Route::get('/orders/{order:order_number}/delivery-photo', [OrderController::class, 'deliveryPhoto'])->name('orders.delivery-photo');
     Route::post('/orders/{order:order_number}/testimonial', [\App\Http\Controllers\TestimonialController::class, 'store'])
         ->middleware('throttle:10,1')->name('orders.testimonial');
 });

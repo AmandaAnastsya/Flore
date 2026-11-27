@@ -6,23 +6,72 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasInventoryLevel;
 
 class Flower extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasInventoryLevel;
 
     public const MAX_TYPES = 20;   // batas jenis bunga per tangkai
 
     protected $fillable = [
         'name', 'slug', 'species', 'color', 'origin', 'description', 'image',
         'price_per_stem', 'bundle_size', 'bundle_price', 'stock', 'reorder_level', 'is_active',
+        'cost_per_stem', 'shelf_life_days',
     ];
 
     protected $casts = [
         'price_per_stem' => 'decimal:2',
         'bundle_price' => 'decimal:2',
+        'cost_per_stem' => 'decimal:2',
         'is_active' => 'boolean',
+        'last_restocked_at' => 'datetime',
     ];
+
+    /** HPP hanya untuk admin. */
+    protected $hidden = ['cost_per_stem'];
+
+    public function unitCost(): ?float
+    {
+        return $this->cost_per_stem === null ? null : (float) $this->cost_per_stem;
+    }
+
+    public function shelfLife(): int
+    {
+        return (int) ($this->shelf_life_days ?: config('flore.inventory.shelf_life_days', 7));
+    }
+
+    /** Umur bunga sejak tiba (hari); null bila tanggal tiba belum tercatat. */
+    public function ageDays(): ?int
+    {
+        return $this->last_restocked_at ? (int) $this->last_restocked_at->copy()->startOfDay()->diffInDays(today()) : null;
+    }
+
+    public function remainingDays(): ?int
+    {
+        return $this->ageDays() === null ? null : $this->shelfLife() - $this->ageDays();
+    }
+
+    /** Kesegaran 0–100% (sisa umur segar dibanding umur segar penuh). */
+    public function freshnessPercent(): ?int
+    {
+        $left = $this->remainingDays();
+
+        return $left === null ? null : (int) max(0, min(100, round($left / $this->shelfLife() * 100)));
+    }
+
+    /** fresh | aging | expired | unknown */
+    public function freshnessState(): string
+    {
+        $left = $this->remainingDays();
+
+        return match (true) {
+            $left === null => 'unknown',
+            $left <= 0 => 'expired',
+            $left <= max(1, intdiv($this->shelfLife(), 3)) => 'aging',
+            default => 'fresh',
+        };
+    }
 
     public function scopeActive(Builder $query): Builder
     {

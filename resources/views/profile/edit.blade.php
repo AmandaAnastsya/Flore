@@ -25,7 +25,10 @@
                 @csrf
                 @method('PUT')
 
-                <h2 class="panel-title">Data Diri</h2>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="panel-title">Data Diri</h2>
+                    <a href="{{ route('account.password.edit') }}" class="small mb-3">Ganti password →</a>
+                </div>
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
                         <label for="name" class="form-label">Nama lengkap</label>

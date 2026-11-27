@@ -307,6 +307,48 @@ class PaymentAndTrackingTest extends TestCase
         $this->assertSame('unpaid', $order->fresh()->payment_status);
     }
 
+    public function test_order_management_tabs_default_to_live_orders(): void
+    {
+        $c = $this->customer();
+        $orders = [];
+        foreach (['pending_payment', 'payment_confirmed', 'preparing', 'out_for_delivery', 'delivered', 'cancelled'] as $s) {
+            $orders[$s] = $this->order($c, ['status' => $s, 'payment_status' => in_array($s, ['pending_payment', 'cancelled'], true) ? 'unpaid' : 'confirmed']);
+        }
+        $verify = $this->order($c, ['payment_status' => 'proof_uploaded']);
+
+        $this->actingAs($this->admin());
+
+        // default = Aktif (live orders): yang masih berjalan saja
+        $res = $this->get('/admin/orders')->assertOk()->assertSee('Order Management & Fulfillment Hub', false);
+        foreach (['pending_payment', 'payment_confirmed', 'preparing', 'out_for_delivery'] as $s) {
+            $res->assertSee($orders[$s]->order_number);
+        }
+        $res->assertSee($verify->order_number)
+            ->assertDontSee($orders['delivered']->order_number)->assertDontSee($orders['cancelled']->order_number)
+            ->assertSee('aria-current="page"', false);
+
+        $expect = [
+            'verify' => [$verify], 'preparing' => [$orders['payment_confirmed'], $orders['preparing']],
+            'shipping' => [$orders['out_for_delivery']], 'done' => [$orders['delivered']], 'cancelled' => [$orders['cancelled']],
+        ];
+        foreach ($expect as $tab => $shown) {
+            $page = $this->get("/admin/orders?tab={$tab}")->assertOk();
+            foreach ($orders + ['verify' => $verify] as $o) {
+                in_array($o, $shown, true) ? $page->assertSee($o->order_number) : $page->assertDontSee($o->order_number);
+            }
+        }
+
+        $all = $this->get('/admin/orders?tab=all');
+        foreach ($orders as $o) { $all->assertSee($o->order_number); }
+
+        // jumlah per tab tampil; tab tak dikenal kembali ke Aktif
+        $this->get('/admin/orders')->assertSeeInOrder(['Aktif', '5', 'Menunggu Verifikasi', '1', 'Dirangkai', '2', 'Dikirim', '1', 'Selesai', '1', 'Dibatalkan', '1', 'Semua', '7']);
+        $this->get('/admin/orders?tab=hapus')->assertOk()->assertDontSee($orders['delivered']->order_number);
+
+        // mencari tanpa memilih tab → mencari di semua pesanan (termasuk yang sudah selesai)
+        $this->get('/admin/orders?q=' . $orders['delivered']->order_number)->assertSee($orders['delivered']->order_number);
+    }
+
     public function test_admin_lists_filters_and_searches_orders(): void
     {
         $waiting = $this->order($this->customer(), ['payment_status' => 'proof_uploaded', 'recipient_name' => 'Siti Aminah']);

@@ -28,7 +28,8 @@ class AdminReportsTest extends TestCase
         parent::setUp();
         $this->travelTo(Carbon::parse('2026-11-11 10:00'));
 
-        $this->admin = User::factory()->create(['role' => 'admin']);
+        // nama tetap: nama acak Faker kadang "Clarissa" dan muncul di topbar (flaky)
+        $this->admin = User::factory()->create(['role' => 'admin', 'name' => 'Admin Floré']);
         $this->customer = User::factory()->create(['role' => 'customer', 'name' => 'Clarissa', 'phone' => '081234567890']);
 
         $cat = Category::create(['name' => 'Hand Bouquet', 'slug' => 'hand-bouquet', 'is_active' => true]);

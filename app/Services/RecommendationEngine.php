@@ -11,6 +11,20 @@ class RecommendationEngine
     /** Kriteria yang punya bobot di tabel recommendation_rules. */
     public const CRITERIA = ['occasion', 'color', 'style', 'size'];
 
+    /**
+     * Faktor "Ketersediaan Stok" (Inventory Safety) — rule khusus, bukan pilihan di wizard.
+     * Bouquet dengan stok aman mendapat bobot penuh, stok menipis setengahnya.
+     * Tidak ada di seeder default → perilaku bawaan tidak berubah sampai admin mengaturnya.
+     */
+    public const STOCK_RULE = ['criteria' => 'stock', 'value' => 'healthy'];
+
+    /**
+     * Faktor "Optimasi Profit Margin": margin ≥ MARGIN_FULL % mendapat bobot penuh, di bawahnya proporsional.
+     * Bouquet tanpa HPP mendapat 0. Alasan ini sengaja TIDAK ditampilkan ke customer.
+     */
+    public const MARGIN_RULE = ['criteria' => 'margin', 'value' => 'healthy'];
+    public const MARGIN_FULL = 50;
+
     /** Rentang harga: min termasuk, max tidak termasuk (null = tanpa batas atas). */
     public const BUDGETS = [
         'under-200' => ['label' => 'Di bawah Rp 200.000',      'min' => 0,      'max' => 200000],
@@ -216,6 +230,21 @@ class RecommendationEngine
             }
         }
 
+        $stockWeight = $weights[self::STOCK_RULE['criteria']][self::STOCK_RULE['value']] ?? 0;
+        $healthyStock = false;
+        if ($criteria !== [] && $stockWeight > 0) {
+            $healthyStock = ! $bouquet->isLowStock();
+            $max += $stockWeight;
+            $score += $healthyStock ? $stockWeight : intdiv($stockWeight, 2);
+        }
+
+        $marginWeight = $weights[self::MARGIN_RULE['criteria']][self::MARGIN_RULE['value']] ?? 0;
+        if ($criteria !== [] && $marginWeight > 0) {
+            $margin = $bouquet->marginPercent();
+            $max += $marginWeight;
+            $score += $margin === null ? 0 : (int) round($marginWeight * max(0, min(1, $margin / self::MARGIN_FULL)));
+        }
+
         $price = (float) $bouquet->price;
         $withinBudget = $budgetRange === null || $this->inRange($price, $budgetRange);
         $nearBudget = ! $withinBudget && $this->inRange($price, $this->relax($budgetRange));
@@ -231,7 +260,10 @@ class RecommendationEngine
             'is_perfect' => $criteria !== [] && $missed === [],
             'within_budget' => $withinBudget,
             'sold' => (int) ($bouquet->sold_count ?? 0),
-            'reasons' => $this->reasons($criteria, $matched, $budgetRange, $withinBudget, $nearBudget),
+            'reasons' => [
+                ...$this->reasons($criteria, $matched, $budgetRange, $withinBudget, $nearBudget),
+                ...($healthyStock ? ['Stok aman, siap dirangkai'] : []),
+            ],
         ];
     }
 

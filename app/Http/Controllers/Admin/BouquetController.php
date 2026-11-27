@@ -105,6 +105,7 @@ class BouquetController extends Controller
             'name' => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string', 'max:1000'],
             'price' => ['required', 'numeric', 'min:0', 'max:99999999'],
+            'cost_price' => ['nullable', 'numeric', 'min:0', 'max:99999999'],
             'stock' => ['required', 'integer', 'min:0', 'max:100000'],
             'low_stock_threshold' => ['required', 'integer', 'min:0', 'max:100000'],
             'occasion' => ['nullable', Rule::in(Bouquet::OCCASIONS)],

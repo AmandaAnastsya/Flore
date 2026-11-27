@@ -27,7 +27,9 @@
         </select>
     </div>
     <button class="btn btn-sm btn-plum">Terapkan</button>
-    <a href="{{ request()->fullUrlWithQuery(['export' => 'csv', 'page' => null]) }}" class="btn btn-sm btn-outline-secondary">Ekspor CSV</a>
+    <a href="{{ request()->fullUrlWithQuery(['export' => 'xlsx', 'page' => null]) }}" class="btn btn-sm btn-outline-secondary">Ekspor Excel</a>
+    <a href="{{ request()->fullUrlWithQuery(['export' => 'print', 'page' => null]) }}" target="_blank" class="btn btn-sm btn-outline-secondary">Cetak / PDF</a>
+    <a href="{{ request()->fullUrlWithQuery(['export' => 'csv', 'page' => null]) }}" class="btn btn-sm btn-outline-secondary">CSV</a>
 </form>
 
 <div class="card">

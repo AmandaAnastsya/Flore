@@ -13,8 +13,19 @@ class DeliverySchedule
         'evening'   => ['label' => 'Sore (15.00–18.00)',  'start' => 15],
     ];
 
+    // Nilai bawaan; yang berlaku dibaca dari Studio Settings (config flore.delivery)
     public const LEAD_HOURS = 3;   // slot harus mulai minimal sekian jam dari sekarang
     public const MAX_DAYS = 30;    // pesan maksimal sekian hari ke depan
+
+    public static function leadHours(): int
+    {
+        return (int) config('flore.delivery.lead_hours', self::LEAD_HOURS);
+    }
+
+    public static function maxDays(): int
+    {
+        return (int) config('flore.delivery.max_days', self::MAX_DAYS);
+    }
 
     /** @return array<string,string> [kunci => label] */
     public static function labels(): array
@@ -26,7 +37,7 @@ class DeliverySchedule
     public static function slotsFor(Carbon $day, ?Carbon $now = null): array
     {
         $now ??= now();
-        $earliest = $now->copy()->addHours(self::LEAD_HOURS);
+        $earliest = $now->copy()->addHours(self::leadHours());
         $day = $day->copy()->startOfDay();
 
         return array_keys(array_filter(
@@ -62,8 +73,8 @@ class DeliverySchedule
         if ($day->lt($today)) {
             return ['delivery_date', 'Tanggal pengiriman tidak boleh sudah lewat.'];
         }
-        if ($day->gt($today->copy()->addDays(self::MAX_DAYS))) {
-            return ['delivery_date', 'Pengiriman maksimal ' . self::MAX_DAYS . ' hari ke depan.'];
+        if ($day->gt($today->copy()->addDays(self::maxDays()))) {
+            return ['delivery_date', 'Pengiriman maksimal ' . self::maxDays() . ' hari ke depan.'];
         }
         if ($day->equalTo($today) && ! self::sameDayPossible($bouquetLines)) {
             return ['delivery_date', 'Pengiriman hari ini hanya untuk pesanan yang semua bouquet-nya berlabel same-day. Pilih tanggal besok atau setelahnya.'];

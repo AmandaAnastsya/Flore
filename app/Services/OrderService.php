@@ -118,6 +118,7 @@ class OrderService
                     'bouquet_id' => $b->id,
                     'bouquet_name' => $b->name,
                     'price' => $b->price,
+                    'unit_cost' => $b->cost_price,   // salinan HPP saat ini untuk laporan margin
                     'quantity' => $qty,
                     'subtotal' => round((float) $b->price * $qty, 2),
                 ]);
@@ -134,6 +135,7 @@ class OrderService
                     'flower_id' => $f->id,
                     'flower_name' => $f->name,
                     'price' => $f->price_per_stem,
+                    'unit_cost' => $f->cost_per_stem,   // HPP per tangkai saat ini
                     'quantity' => $stems,
                     'subtotal' => $f->priceFor($stems),   // sudah memakai harga paket
                 ]);

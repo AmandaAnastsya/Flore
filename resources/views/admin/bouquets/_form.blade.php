@@ -32,6 +32,16 @@
         @error('price') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
     <div class="col-md-4">
+        <label for="cost_price" class="form-label">Harga Modal / HPP (Rp) <span class="text-muted small">— opsional</span></label>
+        <input id="cost_price" type="number" min="0" step="1" name="cost_price"
+               value="{{ old('cost_price', $bouquet->cost_price !== null ? (int) $bouquet->cost_price : '') }}"
+               class="form-control @error('cost_price') is-invalid @enderror" placeholder="mis. 650000" aria-describedby="margin-hint">
+        @error('cost_price') <div class="invalid-feedback">{{ $message }}</div> @enderror
+        <div id="margin-hint" class="form-text" data-margin-hint>Bunga, wrapping, pita & kartu. Hanya terlihat oleh admin.</div>
+    </div>
+    <div class="col-md-4 d-none d-md-block"></div>
+
+    <div class="col-md-4">
         <label for="stock" class="form-label">Stok</label>
         <input id="stock" type="number" min="0" name="stock" value="{{ old('stock', $bouquet->stock) }}"
                class="form-control @error('stock') is-invalid @enderror" required>
@@ -98,3 +108,26 @@
     <button class="btn btn-primary">Simpan</button>
     <a href="{{ route('admin.bouquets.index') }}" class="btn btn-outline-secondary">Batal</a>
 </div>
+@push('scripts')
+<script>
+    // Hitung margin langsung saat harga / HPP diketik
+    (() => {
+        const price = document.getElementById('price');
+        const cost = document.getElementById('cost_price');
+        const hint = document.querySelector('[data-margin-hint]');
+        if (!price || !cost || !hint) return;
+        const base = hint.textContent;
+        const rp = (v) => 'Rp ' + Math.round(v).toLocaleString('id-ID');
+        const update = () => {
+            const p = parseFloat(price.value), c = parseFloat(cost.value);
+            if (!(p > 0) || isNaN(c)) { hint.textContent = base; hint.className = 'form-text'; return; }
+            const m = (p - c) / p * 100;
+            hint.textContent = `Margin ${rp(p - c)} (${m.toFixed(1)}%) per bouquet`;
+            hint.className = 'form-text fw-semibold ' + (m >= {{ \App\Models\Bouquet::MARGIN_HEALTHY }} ? 'text-success' : m >= {{ \App\Models\Bouquet::MARGIN_THIN }} ? 'text-warning' : 'text-danger');
+        };
+        price.addEventListener('input', update);
+        cost.addEventListener('input', update);
+        update();
+    })();
+</script>
+@endpush

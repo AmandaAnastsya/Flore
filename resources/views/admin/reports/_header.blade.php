@@ -8,6 +8,8 @@
     @foreach([
         'admin.reports.sales' => 'Sales Report',
         'admin.reports.products' => 'Best-selling Products',
+        'admin.reports.inventory' => 'Inventory Report',
+        'admin.reports.expenses' => 'Biaya Operasional',
         'admin.reports.customers' => 'Customer Data',
         'admin.testimonials.index' => 'Testimonial',
     ] as $route => $text)
@@ -35,7 +37,11 @@
                 <input type="date" id="to" name="to" value="{{ $to->toDateString() }}" max="{{ today()->toDateString() }}" class="form-control form-control-sm">
             </div>
             <button class="btn btn-sm btn-plum">Terapkan</button>
-            <a href="{{ request()->fullUrlWithQuery(['export' => 'csv', 'page' => null]) }}" class="btn btn-sm btn-outline-secondary">Ekspor CSV</a>
+            <div class="btn-group btn-group-sm" role="group" aria-label="Ekspor laporan">
+                <a href="{{ request()->fullUrlWithQuery(['export' => 'xlsx', 'page' => null]) }}" class="btn btn-outline-secondary">Ekspor Excel</a>
+                <a href="{{ request()->fullUrlWithQuery(['export' => 'print', 'page' => null]) }}" target="_blank" class="btn btn-outline-secondary">Cetak / PDF</a>
+                <a href="{{ request()->fullUrlWithQuery(['export' => 'csv', 'page' => null]) }}" class="btn btn-outline-secondary">CSV</a>
+            </div>
         </form>
     </div>
     <p class="small text-muted mb-3">

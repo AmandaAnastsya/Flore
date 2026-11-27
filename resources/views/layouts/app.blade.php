@@ -77,6 +77,7 @@
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                                 <a class="dropdown-item" href="{{ route('home') }}">Akun Saya</a>
                                 <a class="dropdown-item" href="{{ route('profile.edit') }}">Profil & Momen Spesial</a>
+                                <a class="dropdown-item" href="{{ route('account.password.edit') }}">Ganti Password</a>
                                 <a class="dropdown-item" href="{{ route('orders.index') }}">Pesanan Saya</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
@@ -112,7 +113,12 @@
                 <div class="col-6 col-md-4">
                     <h5 class="mb-3">Payment & Logistics</h5>
                     <p class="mb-1">Transfer bank {{ config('flore.payment.bank', 'BCA') }}</p>
-                    <p class="mb-0">Pengiriman pagi, siang, dan sore</p>
+                    <p class="mb-1">Pengiriman pagi, siang, dan sore</p>
+                    @if($wa = config('flore.store.phone'))
+                        @php $waNumber = preg_replace('/^0/', '62', preg_replace('/\D/', '', $wa)); @endphp
+                        <p class="mb-1"><a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener">WhatsApp {{ $wa }}</a></p>
+                    @endif
+                    @if($mail = config('flore.store.email')) <p class="mb-0"><a href="mailto:{{ $mail }}">{{ $mail }}</a></p> @endif
                 </div>
             </div>
         </div>

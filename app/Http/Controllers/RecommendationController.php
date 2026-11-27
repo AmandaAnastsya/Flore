@@ -40,6 +40,7 @@ class RecommendationController extends Controller
             'budget' => $result->budget,
             'mode' => $result->mode,
             'result_count' => $result->total,
+            'bouquet_ids' => $result->items->take(3)->map(fn ($i) => $i['bouquet']->id)->values()->all(),
         ]);
 
         return response()->json([

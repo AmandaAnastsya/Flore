@@ -24,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
 
+        // Studio Settings dari database menimpa default config/flore.php
+        \App\Services\StudioSettings::applyToConfig();
+
         View::composer('layouts.app', fn ($view) => $view->with('cartCount', app(Cart::class)->count()));
     }
 }

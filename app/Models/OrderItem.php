@@ -10,13 +10,20 @@ class OrderItem extends Model
 {
     protected $fillable = [
         'order_id', 'bouquet_id', 'flower_id', 'bouquet_name', 'flower_name',
-        'price', 'quantity', 'subtotal',
+        'price', 'unit_cost', 'quantity', 'subtotal',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'unit_cost' => 'decimal:2',
         'subtotal' => 'decimal:2',
     ];
+
+    /** Laba kotor item (subtotal − HPP × jumlah); null bila HPP belum diisi saat checkout. */
+    public function grossProfit(): ?float
+    {
+        return $this->unit_cost === null ? null : (float) $this->subtotal - (float) $this->unit_cost * $this->quantity;
+    }
 
     public function order(): BelongsTo
     {

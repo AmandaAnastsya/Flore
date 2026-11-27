@@ -5,16 +5,21 @@
 @php use App\Models\Order; @endphp
 
 <div class="container-fluid px-0">
-    <h1 class="h4 mb-3">Kelola Pesanan</h1>
+    <div class="admin-head">
+        <h1 class="h3 mb-1">Order Management & Fulfillment Hub</h1>
+        <p>Tab <strong>Aktif</strong> berisi semua pesanan yang masih berjalan (live orders). Pencarian dan filter dijalankan ke semua pesanan.</p>
+    </div>
     @include('catalog._flash')
 
-    <div class="d-flex flex-wrap gap-2 mb-3">
-        <a href="{{ route('admin.orders.index', ['payment_status' => 'proof_uploaded']) }}"
-           class="btn btn-sm {{ $payment === 'proof_uploaded' ? 'btn-warning' : 'btn-outline-warning' }}">
-            Perlu verifikasi <span class="badge bg-dark">{{ $awaiting }}</span>
-        </a>
-        <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-outline-secondary">Semua</a>
-    </div>
+    <nav class="nav report-tabs order-tabs flex-nowrap mb-3" aria-label="Tab status pesanan">
+        @foreach($tabs as $key => $label)
+            <a href="{{ route('admin.orders.index', $key === 'active' ? [] : ['tab' => $key]) }}"
+               class="nav-link {{ $tab === $key ? 'active' : '' }}" @if($tab === $key) aria-current="page" @endif>
+                {{ $label }}
+                <span class="tab-count {{ $key === 'verify' && $counts[$key] ? 'attention' : '' }}">{{ $counts[$key] }}</span>
+            </a>
+        @endforeach
+    </nav>
 
     <form method="GET" action="{{ route('admin.orders.index') }}" class="row g-2 mb-3">
         <div class="col-12 col-md-4">

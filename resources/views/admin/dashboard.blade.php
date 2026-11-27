@@ -18,7 +18,7 @@
         </p>
     </div>
     @if($m['awaiting_verification'])
-        <a href="{{ route('admin.orders.index', ['payment_status' => 'proof_uploaded']) }}" class="btn btn-outline-plum btn-sm">
+        <a href="{{ route('admin.orders.index', ['tab' => 'verify']) }}" class="btn btn-outline-plum btn-sm">
             <span data-metric="awaiting_verification">{{ $m['awaiting_verification'] }}</span> pembayaran perlu diverifikasi
         </a>
     @endif
@@ -82,7 +82,7 @@
         {{-- Pesanan terbaru --}}
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h2 class="section-title h6 mb-0">Live Orders & Fulfillment Status</h2>
-            <a href="{{ route('admin.orders.index') }}" class="small">Lihat semua</a>
+            <a href="{{ route('admin.orders.index') }}" class="small">Lihat semua live orders →</a>
         </div>
         <div class="card">
             <div class="table-responsive">
@@ -116,7 +116,10 @@
 
     {{-- Preferensi Smart Wizard --}}
     <div class="col-xl-4">
-        <h2 class="section-title h6 mb-2">Smart Wizard Preferences</h2>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="section-title h6 mb-0">Smart Wizard Preferences</h2>
+            <a href="{{ route('admin.wizard.index') }}" class="small">AI Insights →</a>
+        </div>
         <div class="panel">
             <div class="small fw-semibold mb-3">Most Requested Occasions <span class="text-muted fw-normal">(30 hari)</span></div>
             @forelse($wizardOccasions as $row)

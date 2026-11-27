@@ -49,6 +49,37 @@
                 @endforeach
             </ol>
         @endif
+
+        {{-- Tahap produksi & foto sebelum lulus QC (mockup hal. 45 "Live Studio Arrangement Snapshot") --}}
+        @if($order->status === 'preparing' && $order->stageLabel())
+            <div class="small text-muted mt-3">Tahap di studio: <strong class="text-mauve">{{ $order->stageLabel() }}</strong></div>
+        @endif
+        @if($order->qc_photo && in_array($order->status, ['preparing', 'out_for_delivery', 'delivered'], true))
+            <div class="mt-3">
+                <div class="small fw-semibold mb-1">Live Studio Arrangement Snapshot</div>
+                <img src="{{ route('orders.qc-photo', $order->order_number) }}" alt="Foto rangkaian bunga pesananmu sebelum dikirim"
+                     class="img-fluid rounded qc-snapshot">
+                <div class="small text-success mt-1">✓ Lulus QC{{ $order->qc_passed_at ? ' · ' . $order->qc_passed_at->format('d M H:i') : '' }}</div>
+            </div>
+        @endif
+
+        {{-- Info kurir (Logistics & Courier Dispatch) --}}
+        @if($order->courier && in_array($order->status, ['out_for_delivery', 'delivered'], true))
+            <div class="delivery-info mt-4">
+                @if($order->status === 'out_for_delivery')
+                    <div><strong>Kurir:</strong> {{ $order->courier->name }} · {{ $order->courier->vehicleLabel() }}</div>
+                    <div>Berangkat {{ $order->dispatched_at?->format('H:i') ?? '—' }}
+                        @if($order->eta_at) · perkiraan tiba <strong>± {{ $order->eta_at->format('H:i') }}</strong> @endif
+                    </div>
+                @else
+                    <div><strong>Diterima oleh {{ $order->received_by ?? $order->recipient_name }}</strong>
+                        pada {{ $order->delivered_at?->locale('id')->translatedFormat('d F Y, H:i') ?? '—' }} · kurir {{ $order->courier->name }}</div>
+                    @if($order->delivery_photo)
+                        <a href="{{ route('orders.delivery-photo', $order->order_number) }}" target="_blank" class="small">Lihat foto serah terima</a>
+                    @endif
+                @endif
+            </div>
+        @endif
     </div></div>
 
     <div class="row g-4">

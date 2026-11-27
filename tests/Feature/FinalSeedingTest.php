@@ -122,7 +122,7 @@ class FinalSeedingTest extends TestCase
         $this->seed(DemoSeeder::class);
 
         $this->assertSame(6, User::where('email', 'like', '%@' . DemoSeeder::DOMAIN)->count());
-        $this->assertSame(15, Order::count());
+        $this->assertSame(17, Order::count());
         $this->assertSame(['cancelled', 'delivered', 'out_for_delivery', 'payment_confirmed', 'pending_payment', 'preparing'],
             Order::distinct()->orderBy('status')->pluck('status')->all());
         $this->assertSame(1, Order::awaitingVerification()->count());
@@ -132,7 +132,7 @@ class FinalSeedingTest extends TestCase
 
         $m = app(SalesAnalytics::class)->dashboardMetrics();
         $this->assertGreaterThan(0, $m['revenue_total']);
-        $this->assertSame(3, $m['active_orders']);
+        $this->assertSame(4, $m['active_orders']);
         $this->assertSame(48, $m['wizard_30d']);
 
         $this->assertEquals($stock, Bouquet::pluck('stock', 'id'));   // stok katalog tidak disentuh
@@ -149,7 +149,7 @@ class FinalSeedingTest extends TestCase
         $this->seed(DemoSeeder::class);
 
         $this->assertSame(6, User::where('role', 'customer')->count());
-        $this->assertSame(15, Order::count());
+        $this->assertSame(17, Order::count());
         $this->assertSame(48, WizardQuery::count());
         $this->assertCount(1, Storage::disk('local')->files('payment-proofs'));
 

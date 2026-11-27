@@ -10,5 +10,5 @@ Artisan::command('inspire', function () {
 
 // Smart Reminder System: cek momen spesial & kirim email setiap pagi (zona waktu APP_TIMEZONE)
 Schedule::command('reminders:send')
-    ->dailyAt('08:00')
+    ->dailyAt(config('flore.reminders.time', '08:00'))
     ->withoutOverlapping();

@@ -10,6 +10,13 @@
 
     @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
     @if($errors->has('stock')) <div class="alert alert-danger">{{ $errors->first('stock') }}</div> @endif
+    @php $noCost = \App\Models\Bouquet::whereNull('cost_price')->count(); @endphp
+    @if($noCost)
+        <div class="alert alert-warning small py-2">
+            {{ $noCost }} bouquet belum punya <strong>harga modal (HPP)</strong>, jadi margin & laba kotornya belum bisa dihitung.
+            Isi lewat tombol <em>Edit</em>.
+        </div>
+    @endif
 
     <form method="GET" class="row g-2 mb-3">
         <div class="col-md-4">
@@ -37,7 +44,7 @@
         <div class="table-responsive">
         <table class="table mb-0 align-middle">
             <thead>
-                <tr><th></th><th>Nama</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Ubah stok</th><th class="text-end">Aksi</th></tr>
+                <tr><th></th><th>Nama</th><th>Kategori</th><th>Harga</th><th>Margin</th><th>Stok</th><th>Ubah stok</th><th class="text-end">Aksi</th></tr>
             </thead>
             <tbody>
             @forelse($bouquets as $bouquet)
@@ -51,7 +58,19 @@
                         @unless($bouquet->is_active) <span class="badge bg-secondary">Nonaktif</span> @endunless
                     </td>
                     <td class="text-muted">{{ $bouquet->category->name }}</td>
-                    <td>Rp {{ number_format($bouquet->price, 0, ',', '.') }}</td>
+                    <td>
+                        Rp {{ number_format($bouquet->price, 0, ',', '.') }}
+                        <div class="small text-muted">HPP {{ $bouquet->cost_price !== null ? 'Rp ' . number_format($bouquet->cost_price, 0, ',', '.') : 'belum diisi' }}</div>
+                    </td>
+                    <td>
+                        @if($m = $bouquet->marginBadge())
+                            {{ $bouquet->marginPercent() }}%
+                            <span class="badge bg-{{ $m[0] }}">{{ $m[1] }}</span>
+                            <div class="small text-muted">Rp {{ number_format($bouquet->marginAmount(), 0, ',', '.') }}</div>
+                        @else
+                            <a href="{{ route('admin.bouquets.edit', $bouquet) }}" class="small">Isi HPP</a>
+                        @endif
+                    </td>
                     <td>
                         {{ $bouquet->stock }}
                         <span class="badge bg-{{ $badge[0] }}">{{ $badge[1] }}</span>
@@ -74,7 +93,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="7" class="text-center text-muted py-4">Tidak ada bouquet.</td></tr>
+                <tr><td colspan="8" class="text-center text-muted py-4">Tidak ada bouquet.</td></tr>
             @endforelse
             </tbody>
         </table>

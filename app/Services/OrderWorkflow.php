@@ -84,6 +84,18 @@ class OrderWorkflow
 
             $locked->update(['status' => $next]);
 
+            // jaga data logistik tetap konsisten bila status dimajukan dari halaman Order Management
+            if ($next === 'preparing') {
+                $locked->forceFill(['fulfillment_stage' => 'arranging', 'stage_updated_at' => now()])->save();
+            } elseif ($next === 'out_for_delivery') {
+                $locked->forceFill([
+                    'dispatched_at' => now(),
+                    'eta_at' => now()->addMinutes($locked->travel_minutes ?: 60),
+                ])->save();
+            } elseif ($next === 'delivered') {
+                $locked->forceFill(['delivered_at' => now(), 'delivery_issue' => null, 'issue_reported_at' => null])->save();
+            }
+
             return $next;
         });
     }

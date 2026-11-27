@@ -16,14 +16,46 @@ class Bouquet extends Model
     protected $fillable = [
         'category_id', 'name', 'slug', 'description', 'price', 'stock',
         'low_stock_threshold', 'image', 'occasion', 'color', 'style',
-        'size', 'is_same_day', 'is_active',
+        'size', 'is_same_day', 'is_active', 'cost_price',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'cost_price' => 'decimal:2',
         'is_same_day' => 'boolean',
         'is_active' => 'boolean',
     ];
+
+    /** Harga modal hanya untuk admin — jangan pernah ikut terserialisasi ke JSON/halaman customer. */
+    protected $hidden = ['cost_price'];
+
+    /** Batas margin (% dari harga jual): sehat ≥ 40, tipis 25–39, rendah < 25. */
+    public const MARGIN_HEALTHY = 40;
+    public const MARGIN_THIN = 25;
+
+    public function marginAmount(): ?float
+    {
+        return $this->cost_price === null ? null : (float) $this->price - (float) $this->cost_price;
+    }
+
+    public function marginPercent(): ?float
+    {
+        return $this->cost_price === null || (float) $this->price <= 0
+            ? null : round($this->marginAmount() / (float) $this->price * 100, 1);
+    }
+
+    /** @return array{0:string,1:string}|null [warna badge, label] */
+    public function marginBadge(): ?array
+    {
+        $m = $this->marginPercent();
+
+        return match (true) {
+            $m === null => null,
+            $m >= self::MARGIN_HEALTHY => ['success', 'Sehat'],
+            $m >= self::MARGIN_THIN => ['warning', 'Tipis'],
+            default => ['danger', $m < 0 ? 'Rugi' : 'Rendah'],
+        };
+    }
 
     public function category(): BelongsTo
     {

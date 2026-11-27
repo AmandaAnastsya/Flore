@@ -82,6 +82,29 @@ class SalesAnalytics
         return $days;
     }
 
+    /**
+     * Tren bulanan (mockup hal. 52): pendapatan vs laba bersih, N bulan terakhir termasuk bulan ini.
+     *
+     * @return Collection<int, array{month:Carbon,revenue:float,gross_profit:?float,expenses:float,net_profit:?float}>
+     */
+    public function monthlyTrend(int $months = 6): Collection
+    {
+        return collect(range($months - 1, 0))->map(function ($ago) {
+            $start = today()->startOfMonth()->subMonthsNoOverflow($ago);
+            $end = $start->copy()->endOfMonth();
+            $s = $this->salesSummary($start, $end);
+
+            return [
+                'month' => $start,
+                'revenue' => $s['revenue'],
+                'gross_profit' => $s['gross_profit'],
+                'expenses' => $s['expenses'],
+                // tanpa penjualan tapi ada biaya → rugi sebesar biaya; ada penjualan tanpa HPP → tidak bisa dihitung
+                'net_profit' => $s['net_profit'] ?? ($s['revenue'] == 0 && $s['expenses'] > 0 ? -$s['expenses'] : null),
+            ];
+        });
+    }
+
     /** Ringkasan penjualan dalam rentang tanggal. */
     public function salesSummary(CarbonInterface $from, CarbonInterface $to): array
     {
@@ -90,7 +113,28 @@ class SalesAnalytics
         $count = (clone $paid)->count();
         $revenue = (float) (clone $paid)->sum('total_amount');
 
+        // Laba kotor hanya dari item yang HPP-nya tercatat saat checkout
+        $items = OrderItem::whereHas('order', fn ($q) => $q->paid()->whereBetween('paid_at', $range));
+        $itemsRevenue = (float) (clone $items)->sum('subtotal');
+        $covered = (clone $items)->whereNotNull('unit_cost')
+            ->selectRaw('COALESCE(SUM(subtotal), 0) as revenue, COALESCE(SUM(unit_cost * quantity), 0) as cost')->first();
+        $coveredRevenue = (float) $covered->revenue;
+        $profit = $coveredRevenue - (float) $covered->cost;
+
+        $expenses = (float) \App\Models\Expense::whereBetween('spent_on', [$range[0]->toDateString(), $range[1]->toDateString()])->sum('amount');
+        $stockPurchases = (float) \App\Models\StockMovement::where('reason', 'restock')->whereBetween('created_at', $range)
+            ->get()->sum(fn ($m) => $m->value() ?? 0);
+        $grossProfit = $coveredRevenue > 0 ? $profit : null;
+
         return [
+            'expenses' => $expenses,
+            'stock_purchases' => $stockPurchases,
+            // Laba bersih = laba kotor (pendapatan − HPP) − biaya operasional
+            'net_profit' => $grossProfit === null ? null : $grossProfit - $expenses,
+            'net_margin' => $grossProfit === null || $coveredRevenue <= 0 ? null : round(($grossProfit - $expenses) / $coveredRevenue * 100, 1),
+            'gross_profit' => $grossProfit,
+            'margin' => $coveredRevenue > 0 ? round($profit / $coveredRevenue * 100, 1) : null,
+            'cost_coverage' => $itemsRevenue > 0 ? (int) round($coveredRevenue / $itemsRevenue * 100) : null,
             'revenue' => $revenue,
             'orders' => $count,
             'average' => $count ? $revenue / $count : 0,
@@ -113,7 +157,9 @@ class SalesAnalytics
 
         $rows = OrderItem::whereNotNull($idCol)
             ->whereHas('order', fn ($q) => $q->paid()->whereBetween('paid_at', $range))
-            ->selectRaw("{$idCol} as product_id, MAX({$nameCol}) as product_name, SUM(quantity) as qty, SUM(subtotal) as revenue, COUNT(DISTINCT order_id) as orders")
+            ->selectRaw("{$idCol} as product_id, MAX({$nameCol}) as product_name, SUM(quantity) as qty, SUM(subtotal) as revenue, COUNT(DISTINCT order_id) as orders,
+                SUM(CASE WHEN unit_cost IS NULL THEN 0 ELSE subtotal END) as covered_revenue,
+                SUM(CASE WHEN unit_cost IS NULL THEN 0 ELSE unit_cost * quantity END) as cost")
             ->groupBy($idCol)
             ->orderByDesc('qty')->orderByDesc('revenue')
             ->when($limit, fn ($q) => $q->limit($limit))
@@ -128,6 +174,10 @@ class SalesAnalytics
             'orders' => (int) $r->orders,
             'revenue' => (float) $r->revenue,
             'share' => round((float) $r->revenue / $total * 100, 1),
+            // laba kotor & margin dari item yang HPP-nya tercatat (null = belum ada HPP)
+            'profit' => (float) $r->covered_revenue > 0 ? (float) $r->covered_revenue - (float) $r->cost : null,
+            'margin' => (float) $r->covered_revenue > 0
+                ? round(((float) $r->covered_revenue - (float) $r->cost) / (float) $r->covered_revenue * 100, 1) : null,
         ]);
     }
 
