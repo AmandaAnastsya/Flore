@@ -20,6 +20,7 @@ class CheckoutRequest extends FormRequest
     {
         $this->merge([
             'is_anonymous' => $this->boolean('is_anonymous'),
+            'save_address' => $this->boolean('save_address'),
             // "0812 3456-7890" → "081234567890"
             'recipient_phone' => preg_replace('/[\s\-\.]/', '', (string) $this->input('recipient_phone')),
         ]);
@@ -38,6 +39,8 @@ class CheckoutRequest extends FormRequest
             'card_message' => ['nullable', 'string', 'max:200'],
             'sender_name' => ['nullable', 'string', 'max:100'],
             'is_anonymous' => ['boolean'],
+            'save_address' => ['boolean'],
+            'address_label' => ['nullable', 'string', 'max:40'],
         ];
     }
 

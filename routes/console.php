@@ -12,3 +12,8 @@ Artisan::command('inspire', function () {
 Schedule::command('reminders:send')
     ->dailyAt(config('flore.reminders.time', '08:00'))
     ->withoutOverlapping();
+
+// Batal otomatis pesanan yang belum dibayar melewati batas waktu (Studio Settings → Pembayaran)
+Schedule::command('orders:cancel-unpaid')
+    ->everyFifteenMinutes()
+    ->withoutOverlapping();

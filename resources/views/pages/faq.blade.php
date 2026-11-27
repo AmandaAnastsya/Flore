@@ -80,6 +80,7 @@
             <h2 class="h6 mb-1">Masih memiliki pertanyaan lain?</h2>
             <p class="small mb-0">Tim customer service {{ config('flore.store.name', 'Floré') }} siap membantu setiap hari.</p>
         </div>
+        <a href="{{ route('contact.show') }}" class="btn btn-outline-plum">Kirim Pesan</a>
         @if($waNumber)
             <a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" class="btn btn-plum">Hubungi WhatsApp</a>
         @elseif($email)

@@ -101,14 +101,37 @@ class OrderWorkflow
     }
 
     /** Batalkan dan kembalikan stok, atomik dan hanya sekali. */
-    public function cancel(Order $order, bool $byAdmin): void
+    public function cancel(Order $order, bool $byAdmin, ?string $reason = null): void
     {
-        DB::transaction(function () use ($order, $byAdmin) {
+        $this->cancelWith($order, fn (Order $locked) => $byAdmin ? $locked->canBeCancelledByAdmin() : $locked->canBeCancelledByCustomer(),
+            $reason ?? ($byAdmin ? 'Dibatalkan oleh admin.' : 'Dibatalkan oleh customer.'));
+    }
+
+    /**
+     * Batal otomatis bila belum dibayar melewati batas waktu (State Machine hal. 39: autoCancel [payment timeout]).
+     * Dicek ulang di dalam kunci baris: kalau customer baru saja mengunggah bukti, pesanan TIDAK dibatalkan.
+     *
+     * @return bool true bila pesanan dibatalkan
+     */
+    public function expireUnpaid(Order $order): bool
+    {
+        try {
+            $hours = (int) config('flore.payment.timeout_hours', 24);
+            $this->cancelWith($order, fn (Order $locked) => $locked->isPaymentOverdue(),
+                "Dibatalkan otomatis karena belum dibayar dalam {$hours} jam.");
+
+            return true;
+        } catch (OrderException) {
+            return false;
+        }
+    }
+
+    private function cancelWith(Order $order, callable $allowed, string $reason): void
+    {
+        DB::transaction(function () use ($order, $allowed, $reason) {
             $locked = $this->lock($order);
 
-            $allowed = $byAdmin ? $locked->canBeCancelledByAdmin() : $locked->canBeCancelledByCustomer();
-
-            if (! $allowed) {
+            if (! $allowed($locked)) {
                 throw new OrderException('Pesanan ini tidak bisa dibatalkan.');
             }
 
@@ -122,6 +145,7 @@ class OrderWorkflow
                 Flower::withTrashed()->whereKey($item->flower_id)->increment('stock', $item->quantity);
             }
 
+            $locked->forceFill(['cancel_reason' => $reason]);
             $locked->update(['status' => 'cancelled', 'cancelled_at' => now()]);
         });
     }

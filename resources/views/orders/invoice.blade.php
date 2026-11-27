@@ -106,6 +106,7 @@
             <strong>Cara pembayaran — transfer bank {{ $bank['bank'] }}</strong><br>
             No. rekening <strong>{{ $bank['account_number'] }}</strong> a.n. <strong>{{ $bank['account_name'] }}</strong><br>
             Jumlah <strong>{{ $rp($order->total_amount) }}</strong>. Unggah bukti transfer di halaman pesanan setelah membayar.
+            @if($deadline = $order->paymentDeadline())<br>Batas pembayaran: <strong>{{ $deadline->locale('id')->translatedFormat('l, d F Y H:i') }}</strong> — setelah itu pesanan dibatalkan otomatis.@endif
         </div>
     @else
         <p class="muted" style="margin-top:6mm">Metode pembayaran: Transfer bank {{ $bank['bank'] }}.</p>

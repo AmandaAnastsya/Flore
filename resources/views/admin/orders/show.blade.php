@@ -19,6 +19,10 @@
             <span class="badge bg-secondary">{{ Order::PAYMENT_LABELS[$order->payment_status] ?? $order->payment_status }}</span>
         </div>
     </div>
+    <div class="mb-3 small">
+        @if($order->status === 'cancelled' && $order->cancel_reason) <span class="text-danger">{{ $order->cancel_reason }}</span> @endif
+        @if($deadline = $order->paymentDeadline()) <span class="{{ $order->isPaymentOverdue() ? 'text-danger' : 'text-muted' }}">Batas bayar: {{ $deadline->format('d M Y H:i') }} — setelah itu dibatalkan otomatis.</span> @endif
+    </div>
 
     <div class="row g-4">
         <div class="col-lg-8">

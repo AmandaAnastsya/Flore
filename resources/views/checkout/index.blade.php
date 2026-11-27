@@ -20,7 +20,20 @@
 
                 {{-- 1. Penerima --}}
                 <div class="card border-0 shadow-sm mb-4"><div class="card-body">
-                    <h2 class="h6 section-title mb-3">1. Data Penerima</h2>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                        <h2 class="h6 section-title mb-0">1. Data Penerima</h2>
+                        @if($addresses->isNotEmpty())
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="saved_address" class="small text-muted mb-0">Buku Alamat</label>
+                                <select id="saved_address" class="form-select form-select-sm" style="width:auto">
+                                    <option value="">— Pilih alamat tersimpan —</option>
+                                    @foreach($addresses as $a)
+                                        <option value="{{ $a->id }}" data-fill='@json($a->toCheckout())'>{{ $a->label }}{{ $a->is_default ? ' (utama)' : '' }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+                    </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label" for="recipient_name">Nama penerima</label>
@@ -45,6 +58,14 @@
                             <textarea id="delivery_address" name="delivery_address" rows="2" maxlength="500"
                                       class="form-control @error('delivery_address') is-invalid @enderror">{{ $v('delivery_address') }}</textarea>
                             @error('delivery_address') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-12 d-flex flex-wrap align-items-center gap-3">
+                            <div class="form-check mb-0">
+                                <input class="form-check-input" type="checkbox" name="save_address" value="1" id="save_address" @checked(old('save_address'))>
+                                <label class="form-check-label small" for="save_address">Simpan alamat ini ke Buku Alamat</label>
+                            </div>
+                            <input type="text" name="address_label" maxlength="40" value="{{ old('address_label') }}" placeholder="Nama alamat, mis. Kantor Pasangan"
+                                   class="form-control form-control-sm" style="max-width: 260px" aria-label="Nama alamat" data-address-label @unless(old('save_address')) hidden @endunless>
                         </div>
                     </div>
                 </div></div>
@@ -173,5 +194,20 @@
         });
     }
     dateEl.addEventListener('change', syncSlots); syncSlots();
+
+    // Buku Alamat: isi data penerima dari alamat tersimpan
+    const saved = document.getElementById('saved_address');
+    saved?.addEventListener('change', () => {
+        const opt = saved.selectedOptions[0];
+        if (!opt?.dataset.fill) return;
+        const data = JSON.parse(opt.dataset.fill);
+        for (const [name, value] of Object.entries(data)) {
+            const el = document.getElementById(name);
+            if (el) { el.value = value; el.classList.remove('is-invalid'); }
+        }
+    });
+    const saveBox = document.getElementById('save_address');
+    const labelInput = document.querySelector('[data-address-label]');
+    saveBox?.addEventListener('change', () => { labelInput.hidden = !saveBox.checked; if (saveBox.checked) labelInput.focus(); });
 </script>
 @endsection

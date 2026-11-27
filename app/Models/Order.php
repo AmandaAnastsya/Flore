@@ -175,6 +175,29 @@ public function canUploadProof(): bool
         && in_array($this->payment_status, ['unpaid', 'rejected'], true);
 }
 
+/**
+ * Batas waktu pembayaran (State Machine hal. 39: autoCancel [payment timeout]).
+ * Untuk bukti yang ditolak, customer mendapat waktu yang sama sejak penolakan.
+ */
+public function paymentDeadline(): ?\Illuminate\Support\Carbon
+{
+    if (! $this->canUploadProof() || ! $this->created_at) {
+        return null;
+    }
+
+    $hours = max(1, (int) config('flore.payment.timeout_hours', 24));
+    $base = $this->payment_status === 'rejected' && $this->updated_at ? $this->created_at->max($this->updated_at) : $this->created_at;
+
+    return $base->copy()->addHours($hours);
+}
+
+public function isPaymentOverdue(): bool
+{
+    $deadline = $this->paymentDeadline();
+
+    return $deadline !== null && now()->greaterThanOrEqualTo($deadline);
+}
+
 public function canBeCancelledByCustomer(): bool
 {
     return $this->canUploadProof();

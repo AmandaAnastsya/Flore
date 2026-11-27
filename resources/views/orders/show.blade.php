@@ -35,6 +35,7 @@
         @if($order->status === 'cancelled')
             <div class="alert alert-secondary mb-0">
                 Pesanan dibatalkan{{ $order->cancelled_at ? ' pada ' . $order->cancelled_at->format('d M Y H:i') : '' }}.
+                @if($order->cancel_reason) <div class="small mt-1">{{ $order->cancel_reason }}</div> @endif
             </div>
         @else
             <ol class="timeline">
@@ -140,6 +141,12 @@
                         <strong>{{ $bank['bank'] }} {{ $bank['account_number'] }}</strong><br>
                         a.n. {{ $bank['account_name'] }}
                     </div>
+                    @if($deadline = $order->paymentDeadline())
+                        <div class="alert alert-warning small py-2" role="status">
+                            Bayar sebelum <strong>{{ $deadline->locale('id')->translatedFormat('l, d F Y H:i') }}</strong>.
+                            Setelah itu pesanan dibatalkan otomatis dan stok dilepas.
+                        </div>
+                    @endif
                     <form method="POST" action="{{ route('orders.payment', $order->order_number) }}" enctype="multipart/form-data">
                         @csrf
                         <input type="file" name="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf"
@@ -176,7 +183,13 @@
             <a href="{{ route('orders.invoice', $order->order_number) }}" target="_blank" class="btn btn-outline-plum w-100 mt-2">
                 {{ $order->payment_status === 'confirmed' ? 'Unduh Kuitansi (LUNAS)' : 'Lihat Invoice' }}
             </a>
-            <a href="{{ route('orders.index') }}" class="btn btn-link w-100 mt-2">← Semua pesanan</a>
+            @if($order->status !== 'pending_payment')
+                <form method="POST" action="{{ route('orders.reorder', $order->order_number) }}" class="mt-2">
+                    @csrf <button class="btn btn-plum w-100">Pesan Lagi (Re-Order)</button>
+                </form>
+            @endif
+            <a href="{{ route('contact.show', ['order' => $order->order_number]) }}" class="btn btn-link w-100 mt-1 small">Ada kendala? Hubungi kami</a>
+            <a href="{{ route('orders.index') }}" class="btn btn-link w-100">← Semua pesanan</a>
         </div>
     </div>
 

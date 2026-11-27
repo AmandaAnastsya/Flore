@@ -16,6 +16,7 @@
 @php
     $awaiting = \App\Models\Order::awaitingVerification()->count();
     $pendingTestimonials = \App\Models\Testimonial::withStatus('pending')->count();
+    $newMessages = \App\Models\ContactMessage::where('status', 'new')->count();
     $link = fn (string $pattern) => request()->routeIs($pattern) ? 'active' : '';
     $stockCritical = \App\Models\Flower::active()->whereColumn('stock', '<=', 'reorder_level')->count()
         + \App\Models\Supply::active()->whereColumn('stock', '<=', 'reorder_level')->count();
@@ -53,6 +54,9 @@
             Order Management @if($awaiting) <span class="count">{{ $awaiting }}</span> @endif
         </a>
 
+        <a href="{{ route('admin.messages.index') }}" class="{{ $link('admin.messages.*') }}">
+            Pesan Masuk @if($newMessages) <span class="count">{{ $newMessages }}</span> @endif
+        </a>
         <a href="{{ route('admin.florists.index') }}" class="{{ $link('admin.florists.*') }}">Florist & Produksi</a>
         <a href="{{ route('admin.logistics.index') }}" class="{{ $link('admin.logistics.*') }} {{ $link('admin.couriers.*') }}">
             Logistik & Kurir @if($dispatchAlerts) <span class="count" title="Menunggu kurir / melewati ETA">{{ $dispatchAlerts }}</span> @endif

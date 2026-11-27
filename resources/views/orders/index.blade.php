@@ -31,7 +31,7 @@
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
                     <thead>
-                        <tr><th>No. Pesanan</th><th>Dipesan</th><th>Dikirim</th><th class="text-center">Barang</th><th class="text-end">Total</th><th>Status</th></tr>
+                        <tr><th>No. Pesanan</th><th>Dipesan</th><th>Dikirim</th><th class="text-center">Barang</th><th class="text-end">Total</th><th>Status</th><th></th></tr>
                     </thead>
                     <tbody>
                     @foreach($orders as $order)
@@ -45,6 +45,11 @@
                                 <span class="badge bg-{{ \App\Models\Order::STATUS_BADGES[$order->status] ?? 'secondary' }}">{{ \App\Models\Order::STATUS_LABELS[$order->status] ?? $order->status }}</span>
                                 @if($order->status === 'pending_payment')
                                     <div class="small text-muted">{{ \App\Models\Order::PAYMENT_LABELS[$order->payment_status] ?? '' }}</div>
+                                @endif
+                            </td>
+                            <td class="text-end">
+                                @if($order->status !== 'pending_payment')
+                                    <form method="POST" action="{{ route('orders.reorder', $order->order_number) }}">@csrf <button class="btn btn-sm btn-outline-plum">Pesan Lagi</button></form>
                                 @endif
                             </td>
                         </tr>

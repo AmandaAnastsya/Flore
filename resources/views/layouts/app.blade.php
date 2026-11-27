@@ -51,6 +51,7 @@
                             <a class="dropdown-item" href="{{ route('pages.story') }}">Our Story</a>
                             <a class="dropdown-item" href="{{ route('pages.care') }}">Care Guide</a>
                             <a class="dropdown-item" href="{{ route('pages.faq') }}">FAQ & Pengiriman</a>
+                            <a class="dropdown-item" href="{{ route('contact.show') }}">Hubungi Kami</a>
                         </div>
                     </li>
                     @auth
@@ -124,6 +125,7 @@
                         <li class="mb-1"><a href="{{ route('pages.story') }}">Our Story</a></li>
                         <li class="mb-1"><a href="{{ route('pages.care') }}">Care Guide</a></li>
                         <li class="mb-1"><a href="{{ route('pages.faq') }}">FAQ & Shipping Policy</a></li>
+                        <li class="mb-1"><a href="{{ route('contact.show') }}">Contact Us</a></li>
                     </ul>
                 </div>
                 <div class="col-6 col-md-4">

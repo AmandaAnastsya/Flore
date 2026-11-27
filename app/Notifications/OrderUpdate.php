@@ -76,6 +76,7 @@ class OrderUpdate extends Notification
             'placed' => [
                 "Pesanan **{$o->order_number}** untuk **{$o->recipient_name}** dijadwalkan dikirim **{$date}**.",
                 "Silakan transfer **{$rp}** ke rekening di bawah, lalu unggah bukti transfer agar pesanan bisa segera kami proses.",
+                ...($o->paymentDeadline() ? ['Batas pembayaran: **' . $o->paymentDeadline()->locale('id')->translatedFormat('l, d F Y H:i') . '** — setelah itu pesanan dibatalkan otomatis.'] : []),
             ],
             'proof_uploaded' => ['Admin kami sedang memeriksa bukti transfermu. Kamu akan menerima email konfirmasi setelah pembayaran diverifikasi.'],
             'paid' => [
@@ -104,6 +105,8 @@ class OrderUpdate extends Notification
             ])),
             'cancelled' => array_values(array_filter([
                 'Pesanan **' . $o->order_number . '** telah dibatalkan' . ($o->cancelled_at ? ' pada ' . $o->cancelled_at->locale('id')->translatedFormat('d F Y, H:i') : '') . '.',
+                $o->cancel_reason,
+                str_starts_with((string) $o->cancel_reason, 'Dibatalkan otomatis') ? 'Stok sudah kami lepas. Kalau masih ingin memesan, silakan buat pesanan baru — kamu bisa memakai tombol Pesan Lagi di halaman pesanan.' : null,
                 $o->paid_at ? 'Karena pembayaran sudah kami terima, tim kami akan menghubungimu untuk proses pengembalian dana.' : null,
                 'Jika ini tidak sesuai, balas email ini atau hubungi customer service kami.',
             ])),

@@ -29,6 +29,7 @@ class StudioSettings
             'payment.bank' => ['Nama bank', 'text', ['required', 'string', 'max:40'], null],
             'payment.account_number' => ['Nomor rekening', 'text', ['required', 'regex:/^[0-9 \-]{5,30}$/'], null],
             'payment.account_name' => ['Atas nama', 'text', ['required', 'string', 'max:80'], null],
+            'payment.timeout_hours' => ['Batas waktu pembayaran (jam)', 'number', ['required', 'integer', 'min:1', 'max:168'], 'Pesanan yang belum dibayar setelah batas ini dibatalkan otomatis dan stoknya dikembalikan'],
         ],
         'Pengiriman' => [
             'delivery.lead_hours' => ['Jeda minimal sebelum slot (jam)', 'number', ['required', 'integer', 'min:1', 'max:12'], 'Pesanan hari ini harus dibuat sekian jam sebelum slot dimulai'],

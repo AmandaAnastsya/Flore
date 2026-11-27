@@ -450,3 +450,9 @@ img { max-width: 100%; height: auto; }
 .faq-item p, .faq-item ol { margin: .6rem 0 0; font-size: .88rem; color: #5d4f52; }
 .faq-contact { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; background: #fbf3f5; border: 1px solid #ead0d7; border-radius: $border-radius; padding: 1.25rem 1.5rem; }
 @media (max-width: 767.98px) { .story-profile { grid-template-columns: 1fr; } }
+
+// ---------- Buku alamat ----------
+.address-card { background: #fff; border: 1px solid $flore-line; border-radius: $border-radius; padding: .9rem 1.1rem; }
+.address-card + .address-card { margin-top: .75rem; }
+.address-card.default { border-color: #dcb9c2; background: #fbf6f7; }
+.message-new { border-left: 4px solid $flore-rose; }

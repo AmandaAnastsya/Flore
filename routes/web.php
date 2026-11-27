@@ -19,6 +19,8 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 Route::get('/our-story', [\App\Http\Controllers\PageController::class, 'story'])->name('pages.story');
 Route::get('/care-guide', [\App\Http\Controllers\PageController::class, 'care'])->name('pages.care');
 Route::get('/faq', [\App\Http\Controllers\PageController::class, 'faq'])->name('pages.faq');
+Route::get('/contact', [\App\Http\Controllers\ContactController::class, 'show'])->name('contact.show');
+Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 
 Route::get('/', function (\App\Services\RecommendationEngine $engine) {
     return view('welcome', [
@@ -138,6 +140,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('account/password', [\App\Http\Controllers\PasswordController::class, 'update'])
             ->middleware('throttle:6,1')->name('password.update');
 
+        // Kotak masuk Contact Us
+        Route::get('messages', [\App\Http\Controllers\Admin\ContactMessageController::class, 'index'])->name('messages.index');
+        Route::patch('messages/{message}', [\App\Http\Controllers\Admin\ContactMessageController::class, 'update'])->name('messages.update');
+
         // Studio Settings
         Route::get('settings', [\App\Http\Controllers\Admin\SettingsController::class, 'edit'])->name('settings.edit');
         Route::put('settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
@@ -194,6 +200,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/account/sessions/{session}', [\App\Http\Controllers\AccountController::class, 'revokeSession'])->name('account.sessions.destroy');
     Route::post('/account/sessions/logout-others', [\App\Http\Controllers\AccountController::class, 'logoutOtherSessions'])->middleware('throttle:6,1')->name('account.sessions.others');
     Route::delete('/account', [\App\Http\Controllers\AccountController::class, 'destroy'])->middleware('throttle:6,1')->name('account.destroy');
+    // Buku Alamat (Site Map hal. 33: Profile → Addresses)
+    Route::get('/account/addresses', [\App\Http\Controllers\AddressController::class, 'index'])->name('account.addresses.index');
+    Route::post('/account/addresses', [\App\Http\Controllers\AddressController::class, 'store'])->name('account.addresses.store');
+    Route::get('/account/addresses/{address}/edit', [\App\Http\Controllers\AddressController::class, 'edit'])->name('account.addresses.edit');
+    Route::put('/account/addresses/{address}', [\App\Http\Controllers\AddressController::class, 'update'])->name('account.addresses.update');
+    Route::post('/account/addresses/{address}/default', [\App\Http\Controllers\AddressController::class, 'setDefault'])->name('account.addresses.default');
+    Route::delete('/account/addresses/{address}', [\App\Http\Controllers\AddressController::class, 'destroy'])->name('account.addresses.destroy');
     // Ganti password (customer)
     Route::get('/account/password', [\App\Http\Controllers\PasswordController::class, 'edit'])->name('account.password.edit');
     Route::put('/account/password', [\App\Http\Controllers\PasswordController::class, 'update'])
@@ -209,6 +222,7 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:10,1')->name('orders.payment');
     Route::post('/orders/{order:order_number}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::get('/orders/{order:order_number}/proof', [OrderController::class, 'proof'])->name('orders.proof');
+    Route::post('/orders/{order:order_number}/reorder', [OrderController::class, 'reorder'])->middleware('throttle:20,1')->name('orders.reorder');
     Route::get('/orders/{order:order_number}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
     Route::get('/orders/{order:order_number}/qc-photo', [OrderController::class, 'qcPhoto'])->name('orders.qc-photo');
     Route::get('/orders/{order:order_number}/delivery-photo', [OrderController::class, 'deliveryPhoto'])->name('orders.delivery-photo');

@@ -56,6 +56,11 @@ class User extends Authenticatable
     return $this->role === 'admin';
 }
 
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class)->orderByDesc('is_default')->orderBy('label');
+    }
+
     /** URL foto profil, atau null bila belum diunggah (tampilan memakai inisial). */
     public function avatarUrl(): ?string
     {

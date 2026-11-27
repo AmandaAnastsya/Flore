@@ -27,7 +27,9 @@ class CheckoutController extends Controller
             'lines' => $lines,
             'stemLines' => $stemLines,
             'subtotal' => $lines->sum('subtotal') + $stemLines->sum('subtotal'),
-            'draft' => session('checkout', []),
+            // draft sebelumnya, atau alamat utama dari Buku Alamat
+            'draft' => session('checkout') ?: session('reorder_draft') ?: (auth()->user()->addresses()->where('is_default', true)->first()?->toCheckout() ?? []),
+            'addresses' => auth()->user()->addresses()->get(),
             'user' => auth()->user(),
             'sameDayOk' => $sameDayOk,
             'minDate' => DeliverySchedule::earliestDate($sameDayOk, $now)->toDateString(),
@@ -51,7 +53,14 @@ class CheckoutController extends Controller
             $data['sender_name'] = null;   // anonim: nama pengirim tidak dipakai
         }
 
+        // simpan ke Buku Alamat bila diminta (tanpa duplikat, maks. sesuai batas)
+        if ($data['save_address'] ?? false) {
+            $this->saveAddress($data);
+        }
+        unset($data['save_address'], $data['address_label']);
+
         session()->put('checkout', $data);
+        session()->forget('reorder_draft');
 
         return redirect()->route('checkout.review');
     }
@@ -121,6 +130,26 @@ class CheckoutController extends Controller
 
     return redirect()->route('orders.show', $order->order_number)->with('success', 'Pesanan berhasil dibuat.');
 }
+    private function saveAddress(array $data): void
+    {
+        $user = auth()->user();
+        $exists = $user->addresses()->where('recipient_name', $data['recipient_name'])->where('city', $data['delivery_city'])
+            ->where('address', $data['delivery_address'])->exists();
+
+        if ($exists || $user->addresses()->count() >= \App\Models\Address::MAX_PER_USER) {
+            return;
+        }
+
+        $address = $user->addresses()->create([
+            'label' => $data['address_label'] ?: $data['recipient_name'],
+            'recipient_name' => $data['recipient_name'], 'recipient_phone' => $data['recipient_phone'],
+            'city' => $data['delivery_city'], 'address' => $data['delivery_address'],
+        ]);
+        if ($user->addresses()->count() === 1) {
+            AddressController::makeDefault($address);
+        }
+    }
+
     /** Keranjang kosong, atau berubah karena stok → kembali ke keranjang dengan pesan. */
     private function guard(Cart $cart)
     {

@@ -17,7 +17,7 @@ class StudioSettingsTest extends TestCase
         return array_merge([
             'store__name' => 'Floré', 'store__phone' => '081299990000', 'store__email' => 'halo@flore.id',
             'studio__address' => 'Jl. Senopati No. 8, Jakarta Selatan',
-            'payment__bank' => 'Mandiri', 'payment__account_number' => '123-000-777', 'payment__account_name' => 'Floré Studio',
+            'payment__bank' => 'Mandiri', 'payment__account_number' => '123-000-777', 'payment__account_name' => 'Floré Studio', 'payment__timeout_hours' => 12,
             'delivery__lead_hours' => 4, 'delivery__max_days' => 45,
             'reminders__time' => '09:30', 'inventory__shelf_life_days' => 6,
         ], $override);
